@@ -1,0 +1,19 @@
+<!-- Material input -->
+<div class="container">
+  <form #applyForm>
+    <div class="row justify-content-center">
+      <div class="col-12 mt-5">
+        <h3 class="text-center"> Search for discounts </h3>
+      </div>
+      <div class="col-10 col-md-8 col-lg-6 col-xl-4">
+        <div class="md-form">
+          <input mdbInput aria-label="Text input for item id" type="text" id="itemId" class="form-control" required>
+          <label for="itemId">Item name</label>
+        </div>
+      </div>
+      <div class="col-8 col-sm-1 my-auto text-center">
+        <button mdbBtn mdbWavesEffect size="md" class="btn deep-purple lighten-1 text-white" type="submit" (click)="applyForm.submit()">  Apply </button>
+      </div>
+    </div>
+  </form>
+</div>
