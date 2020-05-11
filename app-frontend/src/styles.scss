@@ -1,1 +1,20 @@
 /* You can add global styles to this file, and also import other style files */
+$elegant-color: #2E2E2E;
+
+$elegant-color-dark: #212121;
+
+$stylish-color: #4B515D;
+
+$stylish-color-dark: #3E4551;
+
+$unique-color: #3F729B;
+
+$unique-color-dark: #1C2331;
+
+$special-color: #37474F;
+
+$special-color-dark: #263238;
+
+.elegant-bg {
+  background-color: $elegant-color;
+}
