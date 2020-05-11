@@ -15,7 +15,7 @@ $unique-color-dark: #1C2331;
 
 $special-color: #37474F;
 
-
+$deep-purple-lighten: #7e57c2 ;
 
 $special-color-dark: #263238;
 
@@ -30,3 +30,13 @@ $special-color-dark: #263238;
 .elegant-semi-dark-bg {
   background-color: $elegant-color-semi-dark;
 }
+
+input:focus + label {
+  color: $deep-purple-lighten !important;
+}
+
+input:focus {
+  border-bottom: 1px solid $deep-purple-lighten !important;
+  box-shadow: 0 1px 0 0 $deep-purple-lighten !important;
+}
+
