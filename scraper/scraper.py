@@ -12,6 +12,8 @@ if r.status_code == 200:
   soup = BeautifulSoup(r.text, 'html.parser')
   print(soup.find("div", {'class':'price-normal selenium-price-normal'}).text)
   
+  
+  
 else:
   print(r.status_code)
   #"#product-top > div.product-sales.product-sales-50461416929 > div.product-categories.product-categories-50461416929 > div > div.product-price.price-show.instalments-show.has-leasing-offer > div.price-voucher > div.price-normal.selenium-price-normal")
