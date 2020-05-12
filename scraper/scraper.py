@@ -11,6 +11,7 @@ r = requests.get(base_url, headers=header)
 if r.status_code == 200:
   soup = BeautifulSoup(r.text, 'html.parser')
   print(soup.find("div", {'class':'price-normal selenium-price-normal'}).text)
+
   
 else:
   print(r.status_code)
