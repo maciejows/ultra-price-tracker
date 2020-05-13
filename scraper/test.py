@@ -1,24 +1,26 @@
-import unittest
-from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
+import requests
+# requests - will be used to make Http requests to the webpage.
+import json
+# json - we'll use this to store the extracted information to a JSON file.
+from bs4 import BeautifulSoup
 
-class PythonOrgSearch(unittest.TestCase):
-
-    def setUp(self):
-        self.driver = webdriver.Firefox()
-
-    def test_search_in_python_org(self):
-        driver = self.driver
-        driver.get("http://www.python.org")
-        self.assertIn("Python", driver.title)
-        elem = driver.find_element_by_name("q")
-        elem.send_keys("pycon")
-        elem.send_keys(Keys.RETURN)
-        assert "No results found." not in driver.page_source
-
-
-    def tearDown(self):
-        self.driver.close()
+def euroCheck(entered_expression):
+    page = open('result.html', 'r', encoding='utf-8')
+    soup = BeautifulSoup(page.read(), 'html.parser')
+    product_list = soup.find_all("div", {'class': 'product-box js-UA-product'})
+    for product in product_list:
+        data = BeautifulSoup(str(product), 'lxml')
+        tag_name = data.find('h2', {'class': 'product-name'})
+        name = tag_name.text.strip()
+        if name.lower() == entered_expression:
+            link = 'https://www.euro.com.pl' + tag_name.a['href'].strip()
+            tag_price = data.find('div', {'class': 'price-normal selenium-price-normal'})
+            price = tag_price.text.strip().replace("\xa0","").replace("zł","")
+            return [name, price, link]
+        else:
+            continue
+    return False
 
 if __name__ == "__main__":
-    unittest.main()
+    entered_expression = "tcl 50ep640"
+    print(euroCheck(entered_expression))

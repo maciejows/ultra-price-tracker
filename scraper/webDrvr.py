@@ -1,17 +1,22 @@
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
+from scraper.scrpr import upcScrapper
 
-searchingPhrase="TCL 50EP640"
+searchingPhrase = "TCL 50EP640"
 
-def searchEuro(searchFor):
-    price=0.00
+
+def searchEuro(search_for):
     driver = webdriver.Chrome()
     driver.get("https://www.euro.com.pl")
-    inputElement = driver.find_element_by_id("keyword")
-    inputElement.send_keys(searchingPhrase)
-    inputElement.send_keys(Keys.ENTER)
+    input_element = driver.find_element_by_id("keyword")
+    input_element.send_keys(search_for)
+    input_element.send_keys(Keys.ENTER)
+    page = driver.page_source
+    driver.close()
+    return page
 
-    return price
 
 if __name__ == "__main__":
-    searchEuro(searchingPhrase)
+    scrap = upcScrapper()
+    #print(scrap.euroParser(searchEuro(searchingPhrase), searchingPhrase))
+    print(scrap.euroScraper("https://www.euro.com.pl/telewizory-led-lcd-plazmowe/tcl-50ep640-tv-led-4k-android.bhtml"))
