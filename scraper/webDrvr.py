@@ -38,10 +38,10 @@ def searchMM(search_for):
 
 if __name__ == "__main__":
     scrap = upcScrapper()
-    #print(scrap.euroParser(searchEuro(searchingPhrase), searchingPhrase))
+    # print(scrap.euroParser(searchEuro(searchingPhrase), searchingPhrase))
 
     print(searchMM(searchingPhrase), searchingPhrase)
-    #print(scrap.euroScraper("https://www.euro.com.pl/telewizory-led-lcd-plazmowe/tcl-50ep640-tv-led-4k-android.bhtml"))
-    #print(scrap.meScraper("https://www.mediaexpert.pl/telewizory-i-rtv/telewizory/telewizor-tcl-led-50ep680x1"))
-    #print(scrap.mmScraper("https://mediamarkt.pl/komputery-i-tablety/laptop-apple-macbook-air-13-mqd32ze-a-i5-8gb-128gb-ssd-macos"))
-    #print(scrap.xkScraper("https://www.x-kom.pl/p/423390-narzedzie-serwisowe-sieciowe-phanteks-toolkit-zestaw-narzedzi.html"))
+    # print(scrap.euroScraper("https://www.euro.com.pl/telewizory-led-lcd-plazmowe/tcl-50ep640-tv-led-4k-android.bhtml"))
+    # print(scrap.meScraper("https://www.mediaexpert.pl/telewizory-i-rtv/telewizory/telewizor-tcl-led-50ep680x1"))
+    # print(scrap.mmScraper("https://mediamarkt.pl/komputery-i-tablety/laptop-apple-macbook-air-13-mqd32ze-a-i5-8gb-128gb-ssd-macos"))
+    # print(scrap.xkScraper("https://www.x-kom.pl/p/423390-narzedzie-serwisowe-sieciowe-phanteks-toolkit-zestaw-narzedzi.html"))
