@@ -55,10 +55,10 @@ class upcScrapper:
 
     def meParser(self, page, entered_expression):
         soup = BeautifulSoup(page, 'html.parser')
-        product_list = soup.find_all("div", {'class': 'product-box js-UA-product'})
+        product_list = soup.find_all("div", {'class': ''})
         for product in product_list:
             data = BeautifulSoup(str(product), 'lxml')
-            tag_name = data.find('h2', {'class': 'product-name'})
+            tag_name = data.find('h2', {'class': ''})
             name = tag_name.text.strip()
             # print(name)
             if name.lower() == entered_expression.lower():
