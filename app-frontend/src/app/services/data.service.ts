@@ -1,21 +1,22 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { Item } from '../models/item';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DataService {
 
-  apiUrl: string = "Any url"
+  apiUrl: string = "http://127.0.0.1:5034"
 
   constructor(private http: HttpClient) { }
 
-  getProposalItems(): Observable<any> {
-    return this.http.get<any>(this.apiUrl);
+  getProposalItems(): Observable<Item> {
+    return this.http.get<Item>(this.apiUrl);
   }
 
-  getSingleItem(): Observable<any> {
-    return this.http.get<any>(this.apiUrl);
+  getSingleItem(): Observable<Item> {
+    return this.http.get<Item>(`${this.apiUrl}/item`);
   }
 }
