@@ -8,10 +8,15 @@ import { DataService } from '../../services/data.service';
 })
 export class SearchBarComponent{
 
+  items: {};
   itemName: string = "Samsung galaxy";
   constructor(private dataService: DataService) { }
 
   onSubmit(){
-    console.log('Submitted');
+    this.dataService.getSingleItem().subscribe(
+      (data) => {
+        this.items = data;
+        console.log(this.items);
+      });
   }
 }
