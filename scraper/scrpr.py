@@ -86,3 +86,18 @@ class upcScrapper:
             return float(soup.find("meta", {'property': 'product:price:amount'})['content'])
         else:
             return result.status_code
+
+    def neo24Parser(self, page):
+        if page is None:
+            return None
+        soup = BeautifulSoup(page, 'lxml')
+        product_list = soup.select('div[class*="listingItemCss-neo24-item"]', limit=1)
+        for product in product_list:
+            data = BeautifulSoup(str(product), 'lxml')
+            name_tag = data.select('a[class*="listingItemCss-neo24-nameLink"]')
+            name = name_tag[0].contents[0]
+            link = "https://www.neo24.pl" + name_tag[0].attrs['href']
+            img = data.select('img[class*="slideCss-lazy-3qv"]')[0].attrs['src']
+            price = data.select('div[class*="specialPriceFormatterCss-neo24-sp"]')[0].contents[0].contents[0]
+            data_set = {'name': name, 'price': price, 'link': link, 'img': img}
+            return data_set
