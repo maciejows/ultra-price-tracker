@@ -24,7 +24,7 @@ class upcScrapper:
             tag_name = data.find('h2', {'class': 'product-name'})
             name = tag_name.text.strip()
             # print(name)
-            if name.lower() == entered_expression.lower():
+            if entered_expression.lower() in name.lower():
                 link = 'www.euro.com.pl' + tag_name.a['href'].strip()
                 tag_price = data.find('div', {'class': 'price-normal selenium-price-normal'})
                 price = tag_price.text.strip().replace("\xa0", "").replace("zł", "")
@@ -87,17 +87,32 @@ class upcScrapper:
         else:
             return result.status_code
 
-    def neo24Parser(self, page):
+    def neo24Parser(self, page, product_code):
         if page is None:
             return None
         soup = BeautifulSoup(page, 'lxml')
-        product_list = soup.select('div[class*="listingItemCss-neo24-item"]', limit=1)
+        product_list = soup.select('div[class*="listingItemCss-neo24-item"]')
         for product in product_list:
             data = BeautifulSoup(str(product), 'lxml')
             name_tag = data.select('a[class*="listingItemCss-neo24-nameLink"]')
             name = name_tag[0].contents[0]
-            link = "https://www.neo24.pl" + name_tag[0].attrs['href']
-            img = data.select('img[class*="slideCss-lazy-3qv"]')[0].attrs['src']
-            price = data.select('div[class*="specialPriceFormatterCss-neo24-sp"]')[0].contents[0].contents[0]
-            data_set = {'name': name, 'price': price, 'link': link, 'img': img}
-            return data_set
+            if product_code in name:
+                link = "https://www.neo24.pl" + name_tag[0].attrs['href']
+                img = data.select('img[class*="slideCss-lazy"]')[0].attrs['src']
+                price = data.select('div[class*="specialPriceFormatterCss-neo24"]')[0].contents[0].contents[0].strip()
+                data_set = {'item': name, 'price': price, 'link': link, 'img': img}
+                return data_set
+            else:
+                continue
+        return None
+
+    def neo24Scraper(self, page):
+        if page is None:
+            return None
+        else:
+            soup = BeautifulSoup(page, 'lxml')
+            print(soup.body)
+            print(soup.find('div', {'class': "productShopCss-neo24-product__price-12m"}))
+            # print(soup.select("div[class*='productShopCss-neo24-product__price']")[0].contents[0].contents[0])
+            # return float(soup.select("div[class*='productShopCss-neo24-product__price']")[0].contents[0].contents[0].strip())
+

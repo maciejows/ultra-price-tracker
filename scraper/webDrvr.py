@@ -7,7 +7,7 @@ from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 
-searchingPhrase = "PHILIPS 55"
+searchingPhrase = "50ep640"
 options = Options()
 options.add_argument('--headless')
 
@@ -85,11 +85,24 @@ def search_neo24(search_for):
     except TimeoutException:
         print("Loading took too much time!")
         return None
-
     page = driver.page_source
     # driver.close()
     return page
 
+def get_page_neo24(url):
+    driver = webdriver.Chrome(chrome_options=options)
+    driver.set_window_size(1920, 1080)
+    driver.get(url)
+    delay = 5  # seconds
+    try:
+        WebDriverWait(driver, delay).until(EC.presence_of_element_located((By.CLASS_NAME, 'productShopCss-neo24-product__price-12m')))
+        print("Page is ready!")
+    except TimeoutException:
+        print("Loading took too much time!")
+        return None
+    page = driver.page_source
+    # driver.close()
+    return page
 
 def search_morele(search_for):
     driver = webdriver.Chrome(chrome_options=options)
@@ -102,12 +115,12 @@ def search_morele(search_for):
     # driver.close()
     return page
 
-
 if __name__ == "__main__":
     scrap = upcScrapper()
-    # print(scrap.euroParser(search_euro(searchingPhrase), searchingPhrase))
-    print(scrap.neo24Parser(search_neo24(searchingPhrase)))
-    # print(scrap.euroScraper("https://www.euro.com.pl/telewizory-led-lcd-plazmowe/tcl-50ep640-tv-led-4k-android.bhtml"))
+    print(scrap.euroParser(search_euro(searchingPhrase), searchingPhrase))
+
+    #print(scrap.neo24Scraper(get_page_neo24('https://www.neo24.pl/philips-55-55pus6704-uhd.html')))
+    #print(scrap.euroScraper("https://www.euro.com.pl/telewizory-led-lcd-plazmowe/tcl-50ep640-tv-led-4k-android.bhtml"))
     # print(scrap.meScraper("https://www.mediaexpert.pl/telewizory-i-rtv/telewizory/telewizor-tcl-led-50ep680x1"))
     # print(scrap.mmScraper("https://mediamarkt.pl/komputery-i-tablety/laptop-apple-macbook-air-13-mqd32ze-a-i5-8gb-128gb-ssd-macos"))
     # print(scrap.xkScraper("https://www.x-kom.pl/p/423390-narzedzie-serwisowe-sieciowe-phanteks-toolkit-zestaw-narzedzi.html"))
