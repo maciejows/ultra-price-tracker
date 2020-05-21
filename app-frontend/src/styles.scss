@@ -19,12 +19,35 @@ $deep-purple-lighten: #7e57c2 ;
 
 $special-color-dark: #263238;
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
-
 // Dark theme
 $dark-bg: #19191A;
 $dark-surface: #303031;
+
+html, body { height: 100%; }
+body { background-color: $dark-bg; color: white; margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+// Z-depth shadows
+.hoverable {
+  cursor: pointer;
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
+}
+.hoverable:hover {
+  box-shadow: 0 6px 8px 0 rgba(0, 0, 0, 0.2), 0 2px 10px 0 rgba(0, 0, 0, 0.22);
+}
+
+.spy {
+  background-color: red;
+}
+
+
+.rounded {
+  border-radius: 16px;
+}
+
+.rmpm {
+  margin: 0;
+  padding: 0;
+}
 
 .dark-bg {
   background-color: $dark-bg !important;
