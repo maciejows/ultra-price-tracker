@@ -8,7 +8,9 @@ import { Item } from '../models/Item';
 })
 export class DataService {
 
-  apiUrl: string = "http://127.0.0.1:5034"
+  apiUrl: string = `http://${window.location.hostname}:5034/items`
+
+  searchedItems: {};
 
   constructor(private http: HttpClient) { }
 
@@ -17,6 +19,22 @@ export class DataService {
   }
 
   getSingleItem(): Observable<Item> {
-    return this.http.get<Item>(`${this.apiUrl}/item`);
+    return this.http.get<Item>(`${this.apiUrl}/items/item`);
   }
+
+  slugify(text: string): string {
+    const a = 'àáâäæãåāăąçćčđďèéêëēėęěğǵḧîïíīįìłḿñńǹňôöòóœøōõőṕŕřßśšşșťțûüùúūǘůűųẃẍÿýžźż·/_,:;'
+    const b = 'aaaaaaaaaacccddeeeeeeeegghiiiiiilmnnnnoooooooooprrsssssttuuuuuuuuuwxyyzzz------'
+    const p = new RegExp(a.split('').join('|'), 'g')
+
+    return text.toString().toLowerCase()
+      .replace(/\s+/g, '-') // Replace spaces with -
+      .replace(p, c => b.charAt(a.indexOf(c))) // Replace special characters
+      .replace(/&/g, '-and-') // Replace & with 'and'
+      .replace(/[^\w\-]+/g, '') // Remove all non-word characters
+      .replace(/\-\-+/g, '-') // Replace multiple - with single -
+      .replace(/^-+/, '') // Trim - from start of text
+      .replace(/-+$/, '') // Trim - from end of text
+  }
+
 }
