@@ -1,19 +1,19 @@
 <!-- Material input -->
-<div class="container-fluid dark-bg" style="height: 100%">
+<div class="container-fluid">
   <div class="container">
     <form #itemSearchForm="ngForm" (ngSubmit)="onSubmit()">
-      <div class="row justify-content-center">
+      <div class="row justify-content-center ">
         <div class="col-12 mt-5">
           <h1 class="text-center"> Search for discounts </h1>
         </div>
-        <div class="col-10 col-md-8 col-lg-6 col-xl-4 mt-3">
+        <div class="col-10 col-md-8 col-lg-6 col-xl-4 rmpm mt-3">
           <div class="md-form">
             <input mdbInput aria-label="Text input for item id" type="text" id="itemName" name="itemName" class="form-control dark-bg-surface"
             [(ngModel)]="itemName" #name="ngModel" required>
             <label for="itemName">Item name</label>
           </div>
         </div>
-        <div class="col-8 col-sm-1 my-auto text-center">
+        <div class="col-8 col-lg-1 my-auto text-center">
           <button mdbBtn mdbWavesEffect size="md" class="btn deep-purple lighten-1 text-white" type="submit" [disabled]="!itemSearchForm.form.valid">  Apply </button>
         </div>
       </div>

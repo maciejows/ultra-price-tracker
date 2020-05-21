@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Item } from '../models/Item';
+import { Observable } from 'rxjs';
+import { map, tap } from 'rxjs/operators';
+import { Subject } from 'rxjs'
 
 @Injectable({
   providedIn: 'root'
@@ -11,8 +13,14 @@ export class DataService {
   apiUrl: string = `http://${window.location.hostname}:5034/items`
 
   searchedItems: {};
+  private itemSource = new Subject();
+  itemContent$ = this.itemSource.asObservable();
 
   constructor(private http: HttpClient) { }
+
+  shareItems(item: {}){
+    this.itemSource.next(item);
+  }
 
   getProposalItems(): Observable<Item> {
     return this.http.get<Item>(this.apiUrl);

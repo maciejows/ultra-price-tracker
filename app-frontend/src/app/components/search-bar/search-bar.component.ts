@@ -8,15 +8,13 @@ import { DataService } from '../../services/data.service';
 })
 export class SearchBarComponent{
 
-  items: {};
   itemName: string = "Logitech g920";
   constructor(private dataService: DataService) { }
 
   onSubmit(){
     this.dataService.getProposalItems().subscribe(
       (data) => {
-        this.items = data;
-        console.log(this.items);
+        this.dataService.shareItems(data);
       });
   }
 }
