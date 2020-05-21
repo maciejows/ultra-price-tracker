@@ -9,11 +9,11 @@ import { DataService } from '../../services/data.service';
 export class SearchBarComponent{
 
   items: {};
-  itemName: string = "Samsung galaxy";
+  itemName: string = "Logitech g920";
   constructor(private dataService: DataService) { }
 
   onSubmit(){
-    this.dataService.getSingleItem().subscribe(
+    this.dataService.getProposalItems().subscribe(
       (data) => {
         this.items = data;
         console.log(this.items);
