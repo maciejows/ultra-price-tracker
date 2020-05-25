@@ -1,7 +1,7 @@
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.options import Options
-from scraper.scrpr import upcScrapper
+from scraper.scrpr import UpcScrapper
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.support import expected_conditions as EC
@@ -116,9 +116,9 @@ def search_morele(search_for):
     return page
 
 if __name__ == "__main__":
-    scrap = upcScrapper()
-    print(scrap.euroParser(search_euro(searchingPhrase), searchingPhrase))
-
+    scrap = UpcScrapper()
+    #print(scrap.euroParser(search_euro(searchingPhrase), searchingPhrase))
+    print(scrap.mediamarkt("https://mediamarkt.pl/rtv-i-telewizory/telewizor-philips-55pus6554-12"))
     #print(scrap.neo24Scraper(get_page_neo24('https://www.neo24.pl/philips-55-55pus6704-uhd.html')))
     #print(scrap.euroScraper("https://www.euro.com.pl/telewizory-led-lcd-plazmowe/tcl-50ep640-tv-led-4k-android.bhtml"))
     # print(scrap.meScraper("https://www.mediaexpert.pl/telewizory-i-rtv/telewizory/telewizor-tcl-led-50ep680x1"))
