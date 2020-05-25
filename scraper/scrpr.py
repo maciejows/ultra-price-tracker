@@ -91,3 +91,16 @@ class UpcScrapper:
             return data_set
         else:
             return result.status_code
+
+    def komputronik(self, base_url):
+        result = requests.get(base_url, headers=self.header)
+        if result.status_code == 200:
+            soup = BeautifulSoup(result.text, 'html.parser')
+            price = float(soup.find("div", {'id': 'product_price_brutto'}).text.replace("zł", "").replace(' ', ''))
+            name = soup.find("h1", {'class': 'prod-name'}).text.replace('\n', '').replace('\t', '').replace(
+                '  ', '')
+            link = base_url
+            data_set = {'item': name, 'price': price, 'link': link}
+            return data_set
+        else:
+            return result.status_code
