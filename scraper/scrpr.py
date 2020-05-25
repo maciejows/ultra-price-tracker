@@ -60,17 +60,34 @@ class UpcScrapper:
         result = requests.get(base_url, headers=self.header)
         if result.status_code == 200:
             soup = BeautifulSoup(result.text, 'html.parser')
-            return float(soup.find("meta", {'property': 'product:price:amount'})['content'])
+            price = float(soup.find("meta", {'property': 'product:price:amount'})['content'])
+            name = soup.find("div", {'class': 'col-xs-12 product-detail-impression'})['data-product-name']
+            link = base_url
+            data_set = {'item': name, 'price': price, 'link': link}
+            return data_set
         else:
             return result.status_code
 
-    def neo24(self, page):
+    def neo24(self, page, base_url):
         if page is None:
             return None
-        else:
-            soup = BeautifulSoup(page, 'lxml')
-            print(soup.body)
-            print(soup.find('div', {'class': "productShopCss-neo24-product__price-12m"}))
-            # print(soup.select("div[class*='productShopCss-neo24-product__price']")[0].contents[0].contents[0])
-            # return float(soup.select("div[class*='productShopCss-neo24-product__price']")[0].contents[0].contents[0].strip())
+        soup = BeautifulSoup(page, 'lxml')
+        name = soup.select('h1[class*="productFullDetailDesktopCss-neo24-productName"]')[0].contents[0].string
+        decimal = "0." + soup.select('div[class*="productShopCss-neo24-sp__fraction"]')[0].contents[0]
+        price = float(soup.select('div[class*="productShopCss-neo24-sp__root"]')[0].contents[0].string.replace(' ', '')) + float(decimal)
+        link = base_url
+        data_set = {'item': name, 'price': price, 'link': link}
+        return data_set
 
+    def morele(self, base_url):
+        result = requests.get(base_url, headers=self.header)
+        if result.status_code == 200:
+            soup = BeautifulSoup(result.text, 'html.parser')
+            price = float(soup.find("div", {'id': 'product_price_brutto'}).text.replace("zł", "").replace(' ', ''))
+            name = soup.find("h1", {'class': 'prod-name'}).text.replace('\n', '').replace('\t', '').replace(
+                '  ', '')
+            link = base_url
+            data_set = {'item': name, 'price': price, 'link': link}
+            return data_set
+        else:
+            return result.status_code

@@ -93,7 +93,7 @@ def get_page_neo24(url):
     driver = webdriver.Chrome(chrome_options=options)
     driver.set_window_size(1920, 1080)
     driver.get(url)
-    delay = 5  # seconds
+    delay = 2  # seconds
     try:
         WebDriverWait(driver, delay).until(EC.presence_of_element_located((By.CLASS_NAME, 'productShopCss-neo24-product__price-12m')))
         print("Page is ready!")
@@ -118,7 +118,9 @@ def search_morele(search_for):
 if __name__ == "__main__":
     scrap = UpcScrapper()
     #print(scrap.euroParser(search_euro(searchingPhrase), searchingPhrase))
-    print(scrap.mediamarkt("https://mediamarkt.pl/rtv-i-telewizory/telewizor-philips-55pus6554-12"))
+    #print(scrap.mediamarkt("https://mediamarkt.pl/rtv-i-telewizory/telewizor-philips-55pus6554-12"))
+    #print(scrap.neo24(get_page_neo24("https://www.neo24.pl/delonghi-odkamieniacz-ecodecalk-500ml.html"),"https://www.neo24.pl/delonghi-odkamieniacz-ecodecalk-500ml.html"))
+    print(scrap.morele("https://www.morele.net/sluchawki-steelseries-arctis-1-61427-5938473/"))
     #print(scrap.neo24Scraper(get_page_neo24('https://www.neo24.pl/philips-55-55pus6704-uhd.html')))
     #print(scrap.euroScraper("https://www.euro.com.pl/telewizory-led-lcd-plazmowe/tcl-50ep640-tv-led-4k-android.bhtml"))
     # print(scrap.meScraper("https://www.mediaexpert.pl/telewizory-i-rtv/telewizory/telewizor-tcl-led-50ep680x1"))
