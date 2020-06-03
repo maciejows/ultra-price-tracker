@@ -66,6 +66,13 @@ def search_komputronik(search_for):
     input_element = driver.find_element_by_xpath('//input[@type="text"]')
     input_element.send_keys(search_for)
     input_element.send_keys(Keys.ENTER)
+    delay = 2  # seconds
+    try:
+        WebDriverWait(driver, delay).until(EC.presence_of_element_located((By.CLASS_NAME, 'product-entry2 ')))
+        print("Page is ready!")
+    except TimeoutException:
+        print("Loading took too much time!")
+        return None
     page = driver.page_source
     driver.close()
     return page
@@ -78,7 +85,7 @@ def search_neo24(search_for):
     input_element = driver.find_element_by_xpath('//input[@placeholder="Wpisz czego szukasz"]')
     input_element.send_keys(search_for)
     input_element.send_keys(Keys.ENTER)
-    delay = 5  # seconds
+    delay = 2  # seconds
     try:
         WebDriverWait(driver, delay).until(EC.presence_of_element_located((By.ID, 'listingContent')))
         print("Page is ready!")
@@ -86,7 +93,7 @@ def search_neo24(search_for):
         print("Loading took too much time!")
         return None
     page = driver.page_source
-    # driver.close()
+    driver.close()
     return page
 
 def get_page_neo24(url):
@@ -112,7 +119,7 @@ def search_morele(search_for):
     input_element.send_keys(search_for)
     input_element.send_keys(Keys.ENTER)
     page = driver.page_source
-    # driver.close()
+    driver.close()
     return page
 
 if __name__ == "__main__":
@@ -125,4 +132,4 @@ if __name__ == "__main__":
     #print(scrap.mediaexpert("https://www.mediaexpert.pl/telewizory-i-rtv/telewizory/telewizor-tcl-led-50ep680x1"))
     #print(scrap.xkom("https://www.x-kom.pl/p/423390-narzedzie-serwisowe-sieciowe-phanteks-toolkit-zestaw-narzedzi.html"))
     #print(scrap.neo24(get_page_neo24("https://www.neo24.pl/delonghi-odkamieniacz-ecodecalk-500ml.html"), "https://www.neo24.pl/delonghi-odkamieniacz-ecodecalk-500ml.html"))
-    print(search_euro("monitor aoc"))
+    print(search_mediamarkt("aoc"))
