@@ -12,7 +12,7 @@ options = Options()
 options.add_argument('--headless')
 
 def search_euro(search_for):
-    driver = webdriver.Chrome(chrome_options=options)
+    driver = webdriver.Chrome(options=options)
     driver.get("https://www.euro.com.pl")
     driver.set_window_size(1920, 1080)
     input_element = driver.find_element_by_id("keyword")
@@ -24,7 +24,7 @@ def search_euro(search_for):
 
 
 def search_mediaexpert(search_for):
-    driver = webdriver.Chrome(chrome_options=options)
+    driver = webdriver.Chrome(options=options)
     driver.get("https://www.mediaexpert.pl")
     driver.set_window_size(1920, 1080)
     input_element = driver.find_element_by_css_selector('div.c-search_input').find_element_by_tag_name('input')
@@ -36,7 +36,7 @@ def search_mediaexpert(search_for):
 
 
 def search_mediamarkt(search_for):
-    driver = webdriver.Chrome(chrome_options=options)
+    driver = webdriver.Chrome(options=options)
     driver.get("https://mediamarkt.pl")
     driver.set_window_size(1920, 1080)
     input_element = driver.find_element_by_id("query_querystring")
@@ -48,7 +48,7 @@ def search_mediamarkt(search_for):
 
 
 def search_xkom(search_for):
-    driver = webdriver.Chrome(chrome_options=options)
+    driver = webdriver.Chrome(options=options)
     driver.set_window_size(1920, 1080)
     driver.get("https://x-kom.pl")
     input_element = driver.find_element_by_xpath('//input[@placeholder="Czego szukasz?"]')
@@ -60,7 +60,7 @@ def search_xkom(search_for):
 
 
 def search_komputronik(search_for):
-    driver = webdriver.Chrome(chrome_options=options)
+    driver = webdriver.Chrome(options=options)
     driver.set_window_size(1920, 1080)
     driver.get("https://komputronik.pl")
     input_element = driver.find_element_by_xpath('//input[@type="text"]')
@@ -79,7 +79,7 @@ def search_komputronik(search_for):
 
 
 def search_neo24(search_for):
-    driver = webdriver.Chrome(chrome_options=options)
+    driver = webdriver.Chrome(options=options)
     driver.set_window_size(1920, 1080)
     driver.get("https://neo24.pl")
     input_element = driver.find_element_by_xpath('//input[@placeholder="Wpisz czego szukasz"]')
@@ -112,7 +112,7 @@ def get_page_neo24(url):
     return page
 
 def search_morele(search_for):
-    driver = webdriver.Chrome(chrome_options=options)
+    driver = webdriver.Chrome(options=options)
     driver.set_window_size(1920, 1080)
     driver.get("https://morele.net")
     input_element = driver.find_element_by_xpath('//input[@name="search"]')
