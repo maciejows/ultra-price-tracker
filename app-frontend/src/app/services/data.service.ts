@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Item } from '../models/Item';
 import { Observable } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
 import { Subject } from 'rxjs'
 
 @Injectable({
@@ -10,7 +9,7 @@ import { Subject } from 'rxjs'
 })
 export class DataService {
 
-  apiUrl: string = `http://${window.location.hostname}:5034/items`
+  apiUrl: string = `http://${window.location.hostname}:5034/items?name=logitech-g920` //TODO: <-- hardcoded
 
   searchedItems: {};
   private itemSource = new Subject();
