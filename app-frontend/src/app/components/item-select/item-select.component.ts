@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { DataService } from '../../services/data.service';
-import { Subscription } from 'rxjs';
+import { SearchedItem } from '../../models/SearchedItem';
+import { Store } from '@ngrx/store';
+import { State } from 'src/app/store/procuct.reducers';
 
 @Component({
   selector: 'app-item-select',
@@ -9,16 +11,21 @@ import { Subscription } from 'rxjs';
 })
 export class ItemSelectComponent implements OnInit {
 
-  constructor(private dataService: DataService) { }
+  constructor(
+    private dataService: DataService,
+    private store: Store<{product: State}>
+    ) { }
 
-  items: {name: string, price: number, thumbnail: string};
-  show: boolean;
+  item: SearchedItem;
+  show: boolean = true;
 
   ngOnInit(): void {
-    this.dataService.itemContent$.subscribe( data =>  {
-      this.show = true;
-      this.items = data as {name: string, price: number, thumbnail: string}
-    });
+    this.store.select(state => state.product.searchedItem).subscribe(
+      data => {
+        this.item = data;
+        console.log('Got Data: ' + data.name);
+      }
+    )
   }
 
   hideComponent(){

@@ -1,5 +1,8 @@
 import { Component } from '@angular/core';
 import { DataService } from '../../services/data.service';
+import { Store } from '@ngrx/store';
+import { searchProduct } from '../../store/product.actions';
+import { State } from '../../store/procuct.reducers';
 
 @Component({
   selector: 'app-search-bar',
@@ -8,13 +11,13 @@ import { DataService } from '../../services/data.service';
 })
 export class SearchBarComponent{
 
-  itemName: string = "Logitech g920";
-  constructor(private dataService: DataService) { }
+  itemName: string = "Logitech-g920";
+  constructor(
+    private dataService: DataService,
+    private store: Store<{product: State}>
+    ) { }
 
   onSubmit(){
-    this.dataService.getProposalItems().subscribe(
-      (data) => {
-        this.dataService.shareItems(data);
-      });
+    this.store.dispatch(searchProduct({searchingPhrase: this.itemName}));
   }
 }

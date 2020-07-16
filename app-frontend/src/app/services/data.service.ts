@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Item } from '../models/Item';
+import { SearchedItem } from '../models/SearchedItem';
 import { Observable } from 'rxjs';
 import { Subject } from 'rxjs'
 
@@ -9,7 +9,7 @@ import { Subject } from 'rxjs'
 })
 export class DataService {
 
-  apiUrl: string = `http://${window.location.hostname}:5034/items?name=logitech-g920` //TODO: <-- hardcoded
+  apiUrl: string = `http://${window.location.hostname}:5034/items`
 
   searchedItems: {};
   private itemSource = new Subject();
@@ -21,12 +21,12 @@ export class DataService {
     this.itemSource.next(item);
   }
 
-  getProposalItems(): Observable<Item> {
-    return this.http.get<Item>(this.apiUrl);
+  getProposalItems(itemName: string): Observable<SearchedItem> {
+    return this.http.get<SearchedItem>(`${this.apiUrl}?name=${itemName}`);
   }
 
-  getSingleItem(): Observable<Item> {
-    return this.http.get<Item>(`${this.apiUrl}/items/item`);
+  getSingleItem(): Observable<SearchedItem> {
+    return this.http.get<SearchedItem>(`${this.apiUrl}/items/item`);
   }
 
   slugify(text: string): string {

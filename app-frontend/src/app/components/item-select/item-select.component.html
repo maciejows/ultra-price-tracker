@@ -1,5 +1,5 @@
 <div *ngIf="show" class="container mt-3">
-  <ng-container *ngIf="items">
+  <ng-container *ngIf="item">
     <div *ngFor="let _ of [1,2,3]" class="row justify-content-center mb-3"
     (click)="hideComponent()"> <!-- TODO: Change for real items-->
         <div class="col-11 col-md-10 col-lg-8 col-xl-6 dark-bg-surface hoverable rounded p-2">
@@ -8,17 +8,17 @@
               <img src="https://via.placeholder.com/75" class="img-fluid rounded-circle" alt="Responsive image">
             </div>
             <div class="col-7 my-auto"> <!-- Product name -->
-              <h3>{{items.name}}</h3>
+              <h3>{{item.name}}</h3>
             </div>
             <div class="col-3 my-auto"> <!-- Price -->
-              {{items.price | number:'1.0-0'}} PLN
+              {{item.price | number:'1.0-0'}} PLN
             </div>
           </div>
         </div>
     </div>
   </ng-container>
   <div class="row justify-content-center">
-    <div *ngIf="!items" class="spinner-border" role="status">
+    <div *ngIf="!item" class="spinner-border" role="status">
       <span class="sr-only">Loading...</span>
     </div>
     <!-- TODO: Check if found
