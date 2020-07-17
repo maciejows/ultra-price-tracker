@@ -1,9 +1,7 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Item } from '../models/Item';
+import { HttpClient } from '@angular/common/http';
+import { SearchedItem } from '../models/SearchedItem';
 import { Observable } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
-import { Subject } from 'rxjs'
 
 @Injectable({
   providedIn: 'root'
@@ -12,22 +10,14 @@ export class DataService {
 
   apiUrl: string = `http://${window.location.hostname}:5034/items`
 
-  searchedItems: {};
-  private itemSource = new Subject();
-  itemContent$ = this.itemSource.asObservable();
-
   constructor(private http: HttpClient) { }
 
-  shareItems(item: {}){
-    this.itemSource.next(item);
+  getProposalItems(itemName: string): Observable<SearchedItem> {
+    return this.http.get<SearchedItem>(`${this.apiUrl}?name=${itemName}`);
   }
 
-  getProposalItems(): Observable<Item> {
-    return this.http.get<Item>(this.apiUrl);
-  }
-
-  getSingleItem(): Observable<Item> {
-    return this.http.get<Item>(`${this.apiUrl}/items/item`);
+  getSingleItem(): Observable<SearchedItem> {
+    return this.http.get<SearchedItem>(`${this.apiUrl}/items/item`);
   }
 
   slugify(text: string): string {

@@ -9,6 +9,10 @@ import { AppComponent } from './app.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { SearchBarComponent } from './components/search-bar/search-bar.component';
 import { ItemSelectComponent } from './components/item-select/item-select.component';
+import { StoreModule} from '@ngrx/store';
+import { reducer } from './store/procuct.reducers';
+import { EffectsModule } from '@ngrx/effects';
+import { ProductEffects } from './store/product.effects';
 
 @NgModule({
   declarations: [
@@ -22,7 +26,9 @@ import { ItemSelectComponent } from './components/item-select/item-select.compon
     MDBBootstrapModule.forRoot(),
     AppRoutingModule,
     FormsModule,
-    HttpClientModule
+    HttpClientModule,
+    StoreModule.forRoot({product: reducer}),
+    EffectsModule.forRoot([ProductEffects])
   ],
   providers: [],
   bootstrap: [AppComponent]

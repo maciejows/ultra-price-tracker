@@ -1,20 +1,28 @@
-import { Component } from '@angular/core';
-import { DataService } from '../../services/data.service';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-search-bar',
   templateUrl: './search-bar.component.html',
   styleUrls: ['./search-bar.component.scss']
 })
-export class SearchBarComponent{
+export class SearchBarComponent implements OnInit{
+  itemName: string;
 
-  itemName: string = "Logitech g920";
-  constructor(private dataService: DataService) { }
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    ) { }
 
-  onSubmit(){
-    this.dataService.getProposalItems().subscribe(
-      (data) => {
-        this.dataService.shareItems(data);
-      });
+  ngOnInit(): void {
+    this.route.queryParams.subscribe(
+      params => {
+        this.itemName=params['name'];
+      }
+    )
+  }
+  
+  onSubmit(): void {
+    this.router.navigate(['search'], {queryParams: {name: this.itemName}});
   }
 }
