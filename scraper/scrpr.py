@@ -23,7 +23,6 @@ class UpcScrapper:
         return text.replace('\n', '').replace('\t', '').replace(
             ' ', '').replace("\xa0", "").replace("zł", "").replace("zl", "").replace(",", ".")
 
-
     def euro(self, base_url):
         result = requests.get(base_url, headers=self.header)
         # result - this is the response object returned by the get method.

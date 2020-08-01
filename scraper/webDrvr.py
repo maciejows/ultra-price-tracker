@@ -1,6 +1,8 @@
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.options import Options
+import multiprocessing
+from scraper.parser import UpcParser
 from scraper.scrpr import UpcScrapper
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.common.exceptions import TimeoutException
@@ -11,7 +13,81 @@ searchingPhrase = "50ep640"
 options = Options()
 options.add_argument('--headless')
 
-def search_euro(search_for):
+def get_data_from_url(url):
+    scrap = UpcScrapper()
+    if 'euro.com.pl' in url:
+        return scrap.euro(url)
+    if 'morele.net' in url:
+        return scrap.morele(url)
+    if 'x-kom.pl' in url:
+        return scrap.xkom(url)
+    if 'mediaexpert.pl' in url:
+        return scrap.mediaexpert(url)
+    if 'mediamarkt.pl' in url:
+        return scrap.mediamarkt(url)
+    if 'komputronik.pl' in url:
+        return scrap.komputronik(url)
+    if 'neo24.pl' in url:
+        return scrap.neo24(url)
+
+def get_pages(name):
+    manager = multiprocessing.Manager()
+    data_dict = manager.dict()
+    euro = multiprocessing.Process(target=search_euro, args=(name, data_dict))
+    euro.start()
+    mediaexpert = multiprocessing.Process(target=search_mediaexpert, args=(name, data_dict))
+    mediaexpert.start()
+    mediamarkt = multiprocessing.Process(target=search_mediamarkt, args=(name, data_dict))
+    mediamarkt.start()
+    neo24 = multiprocessing.Process(target=search_neo24, args=(name, data_dict))
+    neo24.start()
+    morele = multiprocessing.Process(target=search_morele, args=(name, data_dict))
+    morele.start()
+    komputronik = multiprocessing.Process(target=search_komputronik, args=(name, data_dict))
+    komputronik.start()
+
+    euro.join()
+    mediaexpert.join()
+    mediamarkt.join()
+    neo24.join()
+    morele.join()
+    komputronik.join()
+    print("all data covered")
+    return data_dict
+
+
+def scrap_all_url(url):
+    data = get_data_from_url(url)
+    print(data['item'])
+    parser = UpcParser()
+    manager = multiprocessing.Manager()
+    data_dict = manager.dict()
+    pages = get_pages(data['item'])
+    #print(pages)
+    euro = multiprocessing.Process(target=parser.euro, args=(pages['euro'], data['item'], data_dict))
+    euro.start()
+    mediaexpert = multiprocessing.Process(target=parser.mediaexpert, args=(pages['mediaexpert'], data['item'], data_dict))
+    mediaexpert.start()
+    mediamarkt = multiprocessing.Process(target=parser.mediamarkt, args=(pages['mediamarkt'], data['item'], data_dict))
+    mediamarkt.start()
+    neo24 = multiprocessing.Process(target=parser.neo24, args=(pages['neo24'], data['item'], data_dict))
+    neo24.start()
+    morele = multiprocessing.Process(target=parser.morele, args=(pages['morele'], data['item'], data_dict))
+    morele.start()
+    komputronik = multiprocessing.Process(target=parser.morele, args=(pages['komputronik'], data['item'], data_dict))
+    komputronik.start()
+
+    euro.join()
+    mediaexpert.join()
+    mediamarkt.join()
+    neo24.join()
+    morele.join()
+    komputronik.join()
+
+    return data_dict
+
+
+def search_euro(search_for, return_dict):
     driver = webdriver.Chrome(options=options)
     driver.get("https://www.euro.com.pl")
     driver.set_window_size(1920, 1080)
@@ -20,10 +96,11 @@ def search_euro(search_for):
     input_element.send_keys(Keys.ENTER)
     page = driver.page_source
     driver.close()
-    return page
+    print("euro - done")
+    return_dict['euro'] = page
 
 
-def search_mediaexpert(search_for):
+def search_mediaexpert(search_for, return_dict):
     driver = webdriver.Chrome(options=options)
     driver.get("https://www.mediaexpert.pl")
     driver.set_window_size(1920, 1080)
@@ -32,10 +109,11 @@ def search_mediaexpert(search_for):
     input_element.send_keys(Keys.ENTER)
     page = driver.page_source
     driver.close()
-    return page
+    print("euro - me")
+    return_dict['mediaexpert'] = page
 
 
-def search_mediamarkt(search_for):
+def search_mediamarkt(search_for, return_dict):
     driver = webdriver.Chrome(options=options)
     driver.get("https://mediamarkt.pl")
     driver.set_window_size(1920, 1080)
@@ -44,10 +122,11 @@ def search_mediamarkt(search_for):
     input_element.send_keys(Keys.ENTER)
     page = driver.page_source
     driver.close()
-    return page
+    print("mm - done")
+    return_dict['mediamarkt'] = page
 
 
-def search_xkom(search_for):
+def search_xkom(search_for, return_dict):
     driver = webdriver.Chrome(options=options)
     driver.set_window_size(1920, 1080)
     driver.get("https://x-kom.pl")
@@ -56,10 +135,11 @@ def search_xkom(search_for):
     input_element.send_keys(Keys.ENTER)
     page = driver.page_source
     driver.close()
+    print("xkom - done")
     return page
 
 
-def search_komputronik(search_for):
+def search_komputronik(search_for, return_dict):
     driver = webdriver.Chrome(options=options)
     driver.set_window_size(1920, 1080)
     driver.get("https://komputronik.pl")
@@ -75,17 +155,18 @@ def search_komputronik(search_for):
         return None
     page = driver.page_source
     driver.close()
-    return page
+    print("kom - done")
+    return_dict['komputronik'] = page
 
 
-def search_neo24(search_for):
+def search_neo24(search_for, return_dict):
     driver = webdriver.Chrome(options=options)
     driver.set_window_size(1920, 1080)
     driver.get("https://neo24.pl")
     input_element = driver.find_element_by_xpath('//input[@placeholder="Wpisz czego szukasz"]')
     input_element.send_keys(search_for)
     input_element.send_keys(Keys.ENTER)
-    delay = 2  # seconds
+    delay = 5  # seconds
     try:
         WebDriverWait(driver, delay).until(EC.presence_of_element_located((By.ID, 'listingContent')))
         print("Page is ready!")
@@ -94,13 +175,14 @@ def search_neo24(search_for):
         return None
     page = driver.page_source
     driver.close()
-    return page
+    print("neo - done")
+    return_dict['neo24'] = page
 
 def get_page_neo24(url):
     driver = webdriver.Chrome(chrome_options=options)
     driver.set_window_size(1920, 1080)
     driver.get(url)
-    delay = 2  # seconds
+    delay = 5  # seconds
     try:
         WebDriverWait(driver, delay).until(EC.presence_of_element_located((By.CLASS_NAME, 'productShopCss-neo24-product__price-12m')))
         print("Page is ready!")
@@ -111,7 +193,7 @@ def get_page_neo24(url):
     # driver.close()
     return page
 
-def search_morele(search_for):
+def search_morele(search_for, return_dict):
     driver = webdriver.Chrome(options=options)
     driver.set_window_size(1920, 1080)
     driver.get("https://morele.net")
@@ -120,10 +202,15 @@ def search_morele(search_for):
     input_element.send_keys(Keys.ENTER)
     page = driver.page_source
     driver.close()
-    return page
+    print("morele - done")
+    return_dict['morele'] = page
+
+
 
 if __name__ == "__main__":
     #scrap = UpcScrapper()
+    #parser = UpcParser()
+    print(scrap_all_url("https://www.morele.net/sluchawki-steelseries-arctis-1-61427-5938473/"))
     #print(scrap.mediamarkt("https://mediamarkt.pl/rtv-i-telewizory/telewizor-philips-55pus6554-12"))
     #print(scrap.morele("https://www.morele.net/sluchawki-steelseries-arctis-1-61427-5938473/"))
     #print(scrap.komputronik("https://www.komputronik.pl/product/688817/huawei-matebook-x-pro-2020-green.html"))
@@ -132,4 +219,4 @@ if __name__ == "__main__":
     #print(scrap.mediaexpert("https://www.mediaexpert.pl/telewizory-i-rtv/telewizory/telewizor-tcl-led-50ep680x1"))
     #print(scrap.xkom("https://www.x-kom.pl/p/423390-narzedzie-serwisowe-sieciowe-phanteks-toolkit-zestaw-narzedzi.html"))
     #print(scrap.neo24(get_page_neo24("https://www.neo24.pl/delonghi-odkamieniacz-ecodecalk-500ml.html"), "https://www.neo24.pl/delonghi-odkamieniacz-ecodecalk-500ml.html"))
-    print(search_mediamarkt("aoc"))
+    #print(search_mediamarkt("aoc"))

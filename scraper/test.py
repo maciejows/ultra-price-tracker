@@ -5,41 +5,63 @@ import json
 from bs4 import BeautifulSoup
 import re
 header = {'User-Agent': 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.9.0.7) Gecko/2009021910 Firefox/3.0.7'}
+import queue
+import threading
+import time
 
-class test:
-    def __init__(self):
-        pass
-    def cleanText(self, text):
-        return text.strip().replace('\n', '').replace('\t', '').replace(
-            '  ', '').replace("\xa0", "")
+exitFlag = 0
 
+class myThread (threading.Thread):
+   def __init__(self, threadID, name, q):
+      threading.Thread.__init__(self)
+      self.threadID = threadID
+      self.name = name
+      self.q = q
+   def run(self):
+      print ("Starting " + self.name)
+      process_data(self.name, self.q)
+      print ("Exiting " + self.name)
 
-    def cleanPrice(self, text):
-        return text.replace('\n', '').replace('\t', '').replace(
-            ' ', '').replace("\xa0", "").replace("zł", "").replace("zl", "").replace(",", ".")
+def process_data(threadName, q):
+   while not exitFlag:
+     queueLock.acquire()
+     if not workQueue.empty():
+        data = q.get()
+        queueLock.release()
+        print ("%s processing %s" % (threadName, data))
+     else:
+        queueLock.release()
+     time.sleep(1)
 
-    def parser(self, page, product_code):
-        soup = BeautifulSoup(page, 'html.parser')
-        product_list = soup.find_all('div', class_='m-offerBox_content clearfix')
-        for product in product_list:
-            data = BeautifulSoup(str(product), 'lxml')
-            #print(data)
-            product_data = data.find('a', {'class': 'js-product-name'})
-            #print(product_data)
-            name = self.cleanText(product_data['title'])
-            print(name)
-            if product_code.lower() in name.lower():
-                link = "https://mediamarkt.pl" + product_data['href']
-                #print(link)
-                price = self.cleanPrice(product_data['data-offer-price'])
-                #print(price)
-                data_set = {'item': name, 'price': price, 'link': link}
-                return data_set
-            else:
-                continue
-        return False
+shopData = ["euro", "mediaexpert", "mediamarkt", "xkom", "morele","neo24", "komputronik"]
+shopList = ["euro", "mediaexpert", "mediamarkt", "xkom", "morele","neo24", "komputronik"]
+nameList = ["One", "Two", "Three", "Four", "Five", "six", "seven", "8"]
+queueLock = threading.Lock()
+workQueue = queue.Queue(10)
+threads = []
+threadID = 1
 
-if __name__ == "__main__":
-    testing = test()
-    page = open('result.html', encoding='utf-8')
-    print(testing.parser(page, 'AG251FG'))
+# Create new threads
+for tName in shopList:
+   thread = myThread(threadID, tName, workQueue)
+   thread.start()
+   threads.append(thread)
+   threadID += 1
+
+# Fill the queue
+queueLock.acquire()
+for word in nameList:
+   workQueue.put(word)
+queueLock.release()
+
+# Wait for queue to empty
+while not workQueue.empty():
+   pass
+
+# Notify threads it's time to exit
+exitFlag = 1
+
+# Wait for all threads to complete
+for t in threads:
+   t.join()
+print ("Exiting Main Thread")
