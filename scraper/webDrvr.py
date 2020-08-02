@@ -2,7 +2,7 @@ from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.options import Options
 import multiprocessing
-from scraper.parser import UpcParser
+import scraper.parser as sp
 from scraper.scrpr import UpcScrapper
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.common.exceptions import TimeoutException
@@ -53,28 +53,30 @@ def get_pages(name):
     morele.join()
     komputronik.join()
     print("all data covered")
-    return data_dict
+    pages = data_dict
+    return pages
 
 
 def scrap_all_url(url):
     data = get_data_from_url(url)
     print(data['item'])
-    parser = UpcParser()
+    pages = get_pages(data['item'])
     manager = multiprocessing.Manager()
     data_dict = manager.dict()
-    pages = get_pages(data['item'])
+    print(str(pages['neo24']))
+    print("starting multithreaded parsing")
     #print(pages)
-    euro = multiprocessing.Process(target=parser.euro, args=(pages['euro'], data['item'], data_dict))
+    euro = multiprocessing.Process(target=sp.euro, args=(str(pages['euro']), data['item'], data_dict))
     euro.start()
-    mediaexpert = multiprocessing.Process(target=parser.mediaexpert, args=(pages['mediaexpert'], data['item'], data_dict))
+    mediaexpert = multiprocessing.Process(target=sp.mediaexpert, args=(str(pages['mediaexpert']), data['item'], data_dict))
     mediaexpert.start()
-    mediamarkt = multiprocessing.Process(target=parser.mediamarkt, args=(pages['mediamarkt'], data['item'], data_dict))
+    mediamarkt = multiprocessing.Process(target=sp.mediamarkt, args=(str(pages['mediamarkt']), data['item'], data_dict))
     mediamarkt.start()
-    neo24 = multiprocessing.Process(target=parser.neo24, args=(pages['neo24'], data['item'], data_dict))
+    neo24 = multiprocessing.Process(target=sp.neo24, args=(str(pages['neo24']), data['item'], data_dict))
     neo24.start()
-    morele = multiprocessing.Process(target=parser.morele, args=(pages['morele'], data['item'], data_dict))
+    morele = multiprocessing.Process(target=sp.morele, args=(str(pages['morele']), data['item'], data_dict))
     morele.start()
-    komputronik = multiprocessing.Process(target=parser.morele, args=(pages['komputronik'], data['item'], data_dict))
+    komputronik = multiprocessing.Process(target=sp.morele, args=(str(pages['komputronik']), data['item'], data_dict))
     komputronik.start()
 
     euro.join()
@@ -100,7 +102,7 @@ def search_euro(search_for, return_dict):
     return_dict['euro'] = page
 
 
-def search_mediaexpert(search_for):
+def search_mediaexpert(search_for, return_dict):
    driver = webdriver.Chrome(options=options)
    driver.get("https://www.mediaexpert.pl")
    driver.set_window_size(1920, 1080)
@@ -114,10 +116,11 @@ def search_mediaexpert(search_for):
    except TimeoutException:
       print("The parameter was not find!")
       #print(driver.current_url)
-      return driver.current_url
+      return_dict['mediaexpert'] = driver.current_url
+      return
    page = driver.page_source
    driver.close()
-   return page
+   return_dict['mediaexpert'] = page
 
 
 def search_mediamarkt(search_for, return_dict):
@@ -127,6 +130,16 @@ def search_mediamarkt(search_for, return_dict):
     input_element = driver.find_element_by_id("query_querystring")
     input_element.send_keys(search_for)
     input_element.send_keys(Keys.ENTER)
+    delay = 5  # seconds
+    try:
+        WebDriverWait(driver, delay).until(
+            EC.presence_of_all_elements_located((By.CLASS_NAME, 'm-offerBox_content clearfix')))
+        print("Page is ready!")
+    except TimeoutException:
+        print("The parameter was not find!")
+        # print(driver.current_url)
+        return_dict['mediamarkt'] = driver.current_url
+        return
     page = driver.page_source
     driver.close()
     print("mm - done")
@@ -173,13 +186,14 @@ def search_neo24(search_for, return_dict):
     input_element = driver.find_element_by_xpath('//input[@placeholder="Wpisz czego szukasz"]')
     input_element.send_keys(search_for)
     input_element.send_keys(Keys.ENTER)
-    delay = 5  # seconds
+    delay = 10  # seconds
     try:
-        WebDriverWait(driver, delay).until(EC.presence_of_element_located((By.ID, 'listingContent')))
+        WebDriverWait(driver, delay).until(EC.presence_of_all_elements_located((By.ID, 'listingContent')))
         print("Page is ready!")
     except TimeoutException:
         print("Loading took too much time!")
-        return None
+        return_dict['neo24'] = None
+        return
     page = driver.page_source
     driver.close()
     print("neo - done")
@@ -217,7 +231,7 @@ def search_morele(search_for, return_dict):
 if __name__ == "__main__":
     #scrap = UpcScrapper()
     #parser = UpcParser()
-    print(scrap_all_url("https://www.morele.net/sluchawki-steelseries-arctis-1-61427-5938473/"))
+    print(scrap_all_url("https://www.euro.com.pl/telefony-komorkowe/apple-iphone-pro-11-64gb-srebrny.bhtml"))
     #print(scrap.mediamarkt("https://mediamarkt.pl/rtv-i-telewizory/telewizor-philips-55pus6554-12"))
     #print(scrap.morele("https://www.morele.net/sluchawki-steelseries-arctis-1-61427-5938473/"))
     #print(scrap.komputronik("https://www.komputronik.pl/product/688817/huawei-matebook-x-pro-2020-green.html"))
