@@ -32,49 +32,43 @@ def search_mediaexpert(search_for):
    input_element = driver.find_element_by_css_selector('div.c-search_input').find_element_by_tag_name('input')
    input_element.send_keys(search_for)
    input_element.send_keys(Keys.ENTER)
-   print(driver.find_element(By.TAG_NAME('body')).get_attribute('data-view'))
    delay = 5 # seconds
    try:
       WebDriverWait(driver, delay).until(EC.presence_of_all_elements_located((By.XPATH, '/html/body/div[1]/div[13]/div[2]/div[5]/div[1]')))
       print("Page is ready!")
    except TimeoutException:
-      print("Loading took too much time!")
-      return driver.page_source
+      print("Parameter was not find!")
+      print(driver.current_url)
+      return driver.current_url
    page = driver.page_source
-   print("waiting")
    driver.close()
-   print("euro - me")
    return page
 
 
 def mediaexpert(page, product_code):
-   if page is None:
-      return None
-   soup = BeautifulSoup(page, 'html.parser')
-   if soup.body.attrs['data-view'] == 'list':
-      product_list = soup.find_all("div", {'class': 'c-grid_col is-grid-col-1'})
-      for product in product_list:
-         data = BeautifulSoup(str(product), 'lxml')
-         tag_name = data.find('a', {'class': 'a-typo is-secondary'})
-         #print(tag_name)
-         name = tag_name.text.replace("\xa0", "").replace("zł", "").replace('\n','')
-         #print(name)
-         if product_code.lower() in name.lower():
-            link = 'www.mediaexpert.pl' + tag_name['href']
-            tag_price = data.find('span', {'class': 'a-price_price'})
-            price = tag_price.text.strip().replace("\xa0", "").replace("zł", "")
-            img = 'null'
-            data_set = {'item': name, 'price': price, 'link': link}
-            return data_set
-         else:
-            continue
-      return None
-   if soup.body.attrs['data-view'] == 'show':
-      print(soup.current_url)
+   if page is None or page.startswith("https://www.mediaexpert.pl"):
       scrap = UpcScrapper()
-      return scrap.mediaexpert(soup.current_url)
+      return scrap.mediaexpert(page)
+   soup = BeautifulSoup(page, 'html.parser')
+   product_list = soup.find_all("div", {'class': 'c-grid_col is-grid-col-1'})
+   for product in product_list:
+      data = BeautifulSoup(str(product), 'lxml')
+      tag_name = data.find('a', {'class': 'a-typo is-secondary'})
+      #print(tag_name)
+      name = tag_name.text.replace("\xa0", "").replace("zł", "").replace('\n','')
+      #print(name)
+      if product_code.lower() in name.lower():
+         link = 'www.mediaexpert.pl' + tag_name['href']
+         tag_price = data.find('span', {'class': 'a-price_price'})
+         price = tag_price.text.strip().replace("\xa0", "").replace("zł", "")
+         img = 'null'
+         data_set = {'item': name, 'price': price, 'link': link}
+         return data_set
+      else:
+         continue
+   return None
 
 
 if __name__ == '__main__':
-   lala = 'Telewizor PHILIPS LED 58PUS7304/12'
+   lala = 'Telewizor PHILIPS LED'
    print(mediaexpert(search_mediaexpert(lala), lala))

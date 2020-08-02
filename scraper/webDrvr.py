@@ -100,17 +100,24 @@ def search_euro(search_for, return_dict):
     return_dict['euro'] = page
 
 
-def search_mediaexpert(search_for, return_dict):
-    driver = webdriver.Chrome(options=options)
-    driver.get("https://www.mediaexpert.pl")
-    driver.set_window_size(1920, 1080)
-    input_element = driver.find_element_by_css_selector('div.c-search_input').find_element_by_tag_name('input')
-    input_element.send_keys(search_for)
-    input_element.send_keys(Keys.ENTER)
-    page = driver.page_source
-    driver.close()
-    print("euro - me")
-    return_dict['mediaexpert'] = page
+def search_mediaexpert(search_for):
+   driver = webdriver.Chrome(options=options)
+   driver.get("https://www.mediaexpert.pl")
+   driver.set_window_size(1920, 1080)
+   input_element = driver.find_element_by_css_selector('div.c-search_input').find_element_by_tag_name('input')
+   input_element.send_keys(search_for)
+   input_element.send_keys(Keys.ENTER)
+   delay = 5 # seconds
+   try:
+      WebDriverWait(driver, delay).until(EC.presence_of_all_elements_located((By.XPATH, '/html/body/div[1]/div[13]/div[2]/div[5]/div[1]')))
+      print("Page is ready!")
+   except TimeoutException:
+      print("The parameter was not find!")
+      #print(driver.current_url)
+      return driver.current_url
+   page = driver.page_source
+   driver.close()
+   return page
 
 
 def search_mediamarkt(search_for, return_dict):

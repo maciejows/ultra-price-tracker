@@ -7,6 +7,9 @@ from bs4 import BeautifulSoup
 
 # BeautifulSoup - for parsing HTML.
 # return_dict - [euro, mediaexpert, neo24, morele, komputronik, mediamarkt]
+from scraper.scrpr import UpcScrapper
+
+
 class UpcParser:
 
     def cleanText(self, text):
@@ -40,28 +43,28 @@ class UpcParser:
                 continue
         return_dict['euro'] = None
 
-    def mediaexpert(self, page, product_code, return_dict):
-        print("me: " + str(len(page)))
-        if page is None:
-            return_dict['mediaexpert'] = None
+    def mediaexpert(page, product_code):
+        if page is None or page.startswith("https://www.mediaexpert.pl"):
+            scrap = UpcScrapper()
+            return scrap.mediaexpert(page)
         soup = BeautifulSoup(page, 'html.parser')
-        product_list = soup.find_all("div", {'class': 'c-offerBox is-wide is-shops_only'})
+        product_list = soup.find_all("div", {'class': 'c-grid_col is-grid-col-1'})
         for product in product_list:
             data = BeautifulSoup(str(product), 'lxml')
-            tag_name = data.find('h2', {'class': 'c-offerBox_data'})
-            name = tag_name.text.strip()
+            tag_name = data.find('a', {'class': 'a-typo is-secondary'})
+            # print(tag_name)
+            name = tag_name.text.replace("\xa0", "").replace("zł", "").replace('\n', '')
             # print(name)
             if product_code.lower() in name.lower():
-                link = 'www.mediaexpert.pl' + tag_name.a['href'].strip()
-                tag_price = data.find('div', {'class': 'a-price_new  is-big'})
+                link = 'www.mediaexpert.pl' + tag_name['href']
+                tag_price = data.find('span', {'class': 'a-price_price'})
                 price = tag_price.text.strip().replace("\xa0", "").replace("zł", "")
                 img = 'null'
-                data_set = {'item': name, 'price': price, 'link': link, 'img': img}
-                return_dict['mediaexpert'] = data_set
-                return
+                data_set = {'item': name, 'price': price, 'link': link}
+                return data_set
             else:
                 continue
-        return_dict['mediaexpert'] = None
+        return None
 
     def neo24(self, page, product_code, return_dict):
         print("neo: " + str(len(page)))
