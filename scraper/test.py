@@ -1,67 +1,80 @@
+import ast
+
 import requests
 # requests - will be used to make Http requests to the webpage.
 import json
 # json - we'll use this to store the extracted information to a JSON file.
 from bs4 import BeautifulSoup
 import re
+from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.chrome.options import Options
+import multiprocessing
+from scraper.parser import UpcParser
+from scraper.scrpr import UpcScrapper
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.common.exceptions import TimeoutException
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.by import By
+
 header = {'User-Agent': 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.9.0.7) Gecko/2009021910 Firefox/3.0.7'}
 import queue
 import threading
 import time
 
-exitFlag = 0
+options = Options()
+options.add_argument('--headless')
 
-class myThread (threading.Thread):
-   def __init__(self, threadID, name, q):
-      threading.Thread.__init__(self)
-      self.threadID = threadID
-      self.name = name
-      self.q = q
-   def run(self):
-      print ("Starting " + self.name)
-      process_data(self.name, self.q)
-      print ("Exiting " + self.name)
+def search_mediaexpert(search_for):
+   driver = webdriver.Chrome(options=options)
+   driver.get("https://www.mediaexpert.pl")
+   driver.set_window_size(1920, 1080)
+   input_element = driver.find_element_by_css_selector('div.c-search_input').find_element_by_tag_name('input')
+   input_element.send_keys(search_for)
+   input_element.send_keys(Keys.ENTER)
+   print(driver.find_element(By.TAG_NAME('body')).get_attribute('data-view'))
+   delay = 5 # seconds
+   try:
+      WebDriverWait(driver, delay).until(EC.presence_of_all_elements_located((By.XPATH, '/html/body/div[1]/div[13]/div[2]/div[5]/div[1]')))
+      print("Page is ready!")
+   except TimeoutException:
+      print("Loading took too much time!")
+      return driver.page_source
+   page = driver.page_source
+   print("waiting")
+   driver.close()
+   print("euro - me")
+   return page
 
-def process_data(threadName, q):
-   while not exitFlag:
-     queueLock.acquire()
-     if not workQueue.empty():
-        data = q.get()
-        queueLock.release()
-        print ("%s processing %s" % (threadName, data))
-     else:
-        queueLock.release()
-     time.sleep(1)
 
-shopData = ["euro", "mediaexpert", "mediamarkt", "xkom", "morele","neo24", "komputronik"]
-shopList = ["euro", "mediaexpert", "mediamarkt", "xkom", "morele","neo24", "komputronik"]
-nameList = ["One", "Two", "Three", "Four", "Five", "six", "seven", "8"]
-queueLock = threading.Lock()
-workQueue = queue.Queue(10)
-threads = []
-threadID = 1
+def mediaexpert(page, product_code):
+   if page is None:
+      return None
+   soup = BeautifulSoup(page, 'html.parser')
+   if soup.body.attrs['data-view'] == 'list':
+      product_list = soup.find_all("div", {'class': 'c-grid_col is-grid-col-1'})
+      for product in product_list:
+         data = BeautifulSoup(str(product), 'lxml')
+         tag_name = data.find('a', {'class': 'a-typo is-secondary'})
+         #print(tag_name)
+         name = tag_name.text.replace("\xa0", "").replace("zł", "").replace('\n','')
+         #print(name)
+         if product_code.lower() in name.lower():
+            link = 'www.mediaexpert.pl' + tag_name['href']
+            tag_price = data.find('span', {'class': 'a-price_price'})
+            price = tag_price.text.strip().replace("\xa0", "").replace("zł", "")
+            img = 'null'
+            data_set = {'item': name, 'price': price, 'link': link}
+            return data_set
+         else:
+            continue
+      return None
+   if soup.body.attrs['data-view'] == 'show':
+      print(soup.current_url)
+      scrap = UpcScrapper()
+      return scrap.mediaexpert(soup.current_url)
 
-# Create new threads
-for tName in shopList:
-   thread = myThread(threadID, tName, workQueue)
-   thread.start()
-   threads.append(thread)
-   threadID += 1
 
-# Fill the queue
-queueLock.acquire()
-for word in nameList:
-   workQueue.put(word)
-queueLock.release()
-
-# Wait for queue to empty
-while not workQueue.empty():
-   pass
-
-# Notify threads it's time to exit
-exitFlag = 1
-
-# Wait for all threads to complete
-for t in threads:
-   t.join()
-print ("Exiting Main Thread")
+if __name__ == '__main__':
+   lala = 'Telewizor PHILIPS LED 58PUS7304/12'
+   print(mediaexpert(search_mediaexpert(lala), lala))
