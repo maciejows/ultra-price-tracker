@@ -126,7 +126,7 @@ def morele(page, product_code, return_dict):
     return_dict['morele'] = None
 
 def komputronik(page, product_code, return_dict):
-    print("komp: " + str(len(page)))
+    #print("komp: " + str(len(page)))
     if page is None or page.startswith("https://www.komputronik.pl"):
         scrap = UpcScrapper()
         return_dict['komputronik'] = scrap.komputronik(page)
@@ -151,10 +151,9 @@ def komputronik(page, product_code, return_dict):
     return_dict['komputronik'] = None
 
 def mediamarkt(page, product_code, return_dict):
-    print("mm: " + str(len(page)))
-    if page is None or page.startswith("https://www.mediamarkt.pl"):
+    if page is None or page.startswith("https://www.mediamarkt.pl") or page.startswith("https://mediamarkt.pl"):
         scrap = UpcScrapper()
-        return_dict['mediamarkt'] = scrap.mediaexpert(page)
+        return_dict['mediamarkt'] = scrap.mediamarkt(page)
         return
     soup = BeautifulSoup(page, 'html.parser')
     product_list = soup.find_all('div', class_='m-offerBox_content clearfix')
