@@ -214,7 +214,7 @@ def get_page_neo24(url):
         print("The parameter was not find!")
         return None
     page = driver.page_source
-    # driver.close()
+    driver.close()
     return page
 
 def search_morele(search_for, return_dict):

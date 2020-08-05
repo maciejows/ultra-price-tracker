@@ -31,31 +31,35 @@ options = Options()
 
 def search_neo24(search_for):
    driver = webdriver.Chrome(options=options)
+   driver.get("https://mediamarkt.pl")
    driver.set_window_size(1920, 1080)
-   driver.get("https://komputronik.pl")
-   input_element = driver.find_element_by_xpath('//input[@type="text"]')
+   input_element = driver.find_element_by_id("query_querystring")
    input_element.send_keys(search_for)
    input_element.send_keys(Keys.ENTER)
    delay = 3  # seconds
    try:
-      WebDriverWait(driver, delay).until(EC.presence_of_element_located((By.CLASS_NAME, 'product-entry2 ')))
-      print("Page is ready!")
+      WebDriverWait(driver, delay).until(
+         EC.presence_of_all_elements_located((By.XPATH, '//*[@id="js-mainWrapper"]/main/div[6]/div[5]/div[2]/div')))
+      print("Page is ready! MM")
    except TimeoutException:
-      print("Loading took too much time!")
+      print("The parameter was not find! MM")
+      # print(driver.current_url)
       url = driver.current_url
       driver.close()
       return url
    page = driver.page_source
    driver.close()
-   print("kom - done")
+   # print("mm - done")
    return page
 
 
 if __name__ == '__main__':
    manager = multiprocessing.Manager()
    data_dict = manager.dict()
-   file = open("result.html", 'r')
-   data = file.read()
-   file.close()
-   parser.komputronik("https://www.komputronik.pl/product/657984/apple-iphone-11-pro-max-64gb-zloty.html", "Smartfon APPLE iPhone 11 Pro Max 64GB Gold", data_dict)
+   #file = open("result.html", 'r')
+   #data = file.read()
+   #file.close()
+   parser.mediamarkt(search_neo24("Smartfon APPLE iPhone 11 Pro Max 64GB"), "Smartfon APPLE iPhone 11 Pro Max 64GB Złoty", data_dict)
+   #scrap = UpcScrapper()
+   #print(scrap.mediamarkt("https://mediamarkt.pl/telefony-i-smartfony/smartfon-apple-iphone-11-pro-max-64gb-zloty-mwhg2pm-a?querystring=Smartfon%20APPLE%20iPhone%2011%20Pro%20Max%2064GB%20Złoty"))
    print(data_dict)
