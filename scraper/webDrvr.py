@@ -11,7 +11,7 @@ from selenium.webdriver.common.by import By
 
 searchingPhrase = "50ep640"
 options = Options()
-options.add_argument('--headless')
+#options.add_argument('--headless')
 
 def get_data_from_url(url):
     scrap = UpcScrapper()
@@ -109,12 +109,12 @@ def search_mediaexpert(search_for, return_dict):
    input_element = driver.find_element_by_css_selector('div.c-search_input').find_element_by_tag_name('input')
    input_element.send_keys(search_for)
    input_element.send_keys(Keys.ENTER)
-   delay = 5 # seconds
+   delay = 3 # seconds
    try:
       WebDriverWait(driver, delay).until(EC.presence_of_all_elements_located((By.XPATH, '/html/body/div[1]/div[13]/div[2]/div[5]/div[1]')))
-      print("Page is ready!")
+      print("Page is ready! ME")
    except TimeoutException:
-      print("The parameter was not find!")
+      print("The parameter was not find! ME")
       #print(driver.current_url)
       return_dict['mediaexpert'] = driver.current_url
       return
@@ -130,19 +130,20 @@ def search_mediamarkt(search_for, return_dict):
     input_element = driver.find_element_by_id("query_querystring")
     input_element.send_keys(search_for)
     input_element.send_keys(Keys.ENTER)
-    delay = 5  # seconds
+    delay = 3  # seconds
     try:
         WebDriverWait(driver, delay).until(
-            EC.presence_of_all_elements_located((By.CLASS_NAME, 'm-offerBox_content clearfix')))
-        print("Page is ready!")
+            EC.presence_of_all_elements_located((By.XPATH, '//*[@id="js-mainWrapper"]/main/div[6]/div[5]/div[2]/div')))
+        print("Page is ready! MM")
     except TimeoutException:
-        print("The parameter was not find!")
+        print("The parameter was not find! MM")
         # print(driver.current_url)
         return_dict['mediamarkt'] = driver.current_url
+        driver.close()
         return
     page = driver.page_source
     driver.close()
-    print("mm - done")
+    #print("mm - done")
     return_dict['mediamarkt'] = page
 
 
@@ -166,16 +167,17 @@ def search_komputronik(search_for, return_dict):
     input_element = driver.find_element_by_xpath('//input[@type="text"]')
     input_element.send_keys(search_for)
     input_element.send_keys(Keys.ENTER)
-    delay = 2  # seconds
+    delay = 3  # seconds
     try:
         WebDriverWait(driver, delay).until(EC.presence_of_element_located((By.CLASS_NAME, 'product-entry2 ')))
-        print("Page is ready!")
+        print("Page is ready! Kom")
     except TimeoutException:
-        print("Loading took too much time!")
-        return None
+        print("The parameter was not find!  Kom")
+        return_dict['komputronik'] = driver.current_url
+        driver.close()
+        return
     page = driver.page_source
     driver.close()
-    print("kom - done")
     return_dict['komputronik'] = page
 
 
@@ -191,8 +193,9 @@ def search_neo24(search_for, return_dict):
         WebDriverWait(driver, delay).until(EC.presence_of_all_elements_located((By.ID, 'listingContent')))
         print("Page is ready!")
     except TimeoutException:
-        print("Loading took too much time!")
-        return_dict['neo24'] = None
+        print("The parameter was not find! ")
+        return_dict['neo24'] = driver.current_url
+        driver.close()
         return
     page = driver.page_source
     driver.close()
@@ -208,7 +211,7 @@ def get_page_neo24(url):
         WebDriverWait(driver, delay).until(EC.presence_of_element_located((By.CLASS_NAME, 'productShopCss-neo24-product__price-12m')))
         print("Page is ready!")
     except TimeoutException:
-        print("Loading took too much time!")
+        print("The parameter was not find!")
         return None
     page = driver.page_source
     # driver.close()
@@ -232,7 +235,7 @@ if __name__ == "__main__":
     #scrap = UpcScrapper()
     #parser = UpcParser()
     print(scrap_all_url("https://www.euro.com.pl/telefony-komorkowe/apple-iphone-pro-11-64gb-srebrny.bhtml"))
-    #print(scrap.mediamarkt("https://mediamarkt.pl/rtv-i-telewizory/telewizor-philips-55pus6554-12"))
+    #print(search_mediamarkt("Smartfon APPLE iPhone 11 Pro Max 64GB Złoty"))
     #print(scrap.morele("https://www.morele.net/sluchawki-steelseries-arctis-1-61427-5938473/"))
     #print(scrap.komputronik("https://www.komputronik.pl/product/688817/huawei-matebook-x-pro-2020-green.html"))
     #print(scrap.neo24Scraper(get_page_neo24('https://www.neo24.pl/philips-55-55pus6704-uhd.html')))

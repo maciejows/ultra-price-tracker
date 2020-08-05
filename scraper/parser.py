@@ -68,7 +68,7 @@ def mediaexpert(page, product_code, return_dict):
             return
         else:
             continue
-    return None
+    return_dict['mediaexpert'] = None
 
 def neo24(page, product_code, return_dict):
     print("neo: " + str(len(page)))
@@ -127,24 +127,23 @@ def morele(page, product_code, return_dict):
 
 def komputronik(page, product_code, return_dict):
     print("komp: " + str(len(page)))
-    if page is None:
-        return_dict['komputronik'] = None
+    if page is None or page.startswith("https://www.komputronik.pl"):
+        scrap = UpcScrapper()
+        return_dict['komputronik'] = scrap.komputronik(page)
         return
     soup = BeautifulSoup(page, 'html.parser')
-    product_list = soup.find_all("div", {'class': ''})
+    product_list = soup.find_all("li", {'class': 'product-entry2'})
     for product in product_list:
         data = BeautifulSoup(str(product), 'lxml')
-        tag_name = data.find('h2', {'class': ''})
+        tag_name = data.find('a', {'class': 'blank-link at-product-name-0'})
         name = tag_name.text.strip()
-        # print(name)
+        #print(name)
         ratio = fuzz.ratio(product_code.lower(), name.lower())
-        print(ratio)
-        if ratio > 50:
-            link = 'www.komputronik.pl' + tag_name.a['href'].strip()
-            tag_price = data.find('div', {'class': 'price-normal selenium-price-normal'})
+        if ratio > 60:
+            link = 'www.komputronik.pl' + tag_name['href'].strip()
+            tag_price = data.find('span', {'class': 'proper at-gross-price-0'})
             price = tag_price.text.strip().replace("\xa0", "").replace("zł", "")
-            img = 'null'
-            data_set = {'item': name, 'price': price, 'link': link, 'img': img}
+            data_set = {'item': name, 'price': price, 'link': link}
             return_dict['komputronik'] = data_set
             return
         else:
@@ -153,8 +152,9 @@ def komputronik(page, product_code, return_dict):
 
 def mediamarkt(page, product_code, return_dict):
     print("mm: " + str(len(page)))
-    if page is None:
-        return_dict['mediamarkt'] = None
+    if page is None or page.startswith("https://www.mediamarkt.pl"):
+        scrap = UpcScrapper()
+        return_dict['mediamarkt'] = scrap.mediaexpert(page)
         return
     soup = BeautifulSoup(page, 'html.parser')
     product_list = soup.find_all('div', class_='m-offerBox_content clearfix')
