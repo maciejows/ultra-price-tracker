@@ -8,6 +8,7 @@ from fuzzywuzzy import fuzz
 
 # BeautifulSoup - for parsing HTML.
 # return_dict - [euro, mediaexpert, neo24, morele, komputronik, mediamarkt]
+from scraper.webdrvr import get_page_neo24
 from scraper.scrpr import UpcScrapper
 
 
@@ -20,7 +21,7 @@ def cleanPrice(text):
         ' ', '').replace("\xa0", "").replace("zł", "").replace("zl", "").replace(",", ".")
 
 def euro(page, product_code, return_dict):
-    print("euro: " + str(len(page)))
+    #print("euro: " + str(len(page)))
     if page is None:
         return_dict['euro'] = None
         return
@@ -32,7 +33,7 @@ def euro(page, product_code, return_dict):
         name = cleanText(tag_name.text)
         # print(name)
         ratio = fuzz.ratio(product_code.lower(), name.lower())
-        print(ratio)
+        #print(ratio)
         if ratio > 50:
             link = 'www.euro.com.pl' + tag_name.a['href'].strip()
             tag_price = data.find('div', {'class': 'price-normal selenium-price-normal'})
@@ -59,7 +60,7 @@ def mediaexpert(page, product_code, return_dict):
         name = tag_name.text.replace("\xa0", "").replace("zł", "").replace('\n', '')
         # print(name)
         ratio = fuzz.ratio(product_code.lower(), name.lower())
-        print(ratio)
+        #print(ratio)
         if ratio > 50:
             link = 'www.mediaexpert.pl' + tag_name['href']
             tag_price = data.find('span', {'class': 'a-price_price'})
@@ -71,7 +72,11 @@ def mediaexpert(page, product_code, return_dict):
     return_dict['mediaexpert'] = None
 
 def neo24(page, product_code, return_dict):
-    print("neo: " + str(len(page)))
+    #print("neo: " + str(len(page)))
+    if page.startswith("https://www.neo24.pl") or page.startswith("https://neo24.pl"):
+        scrap = UpcScrapper()
+        return_dict['neo24'] = scrap.neo24(get_page_neo24(page), page)
+        return
     if page is None:
         return_dict['neo24'] = None
         return
@@ -82,7 +87,7 @@ def neo24(page, product_code, return_dict):
         name_tag = data.select('a[class*="listingItemCss-neo24-nameLink"]')
         name = name_tag[0].contents[0]
         ratio = fuzz.ratio(product_code.lower(), name.lower())
-        print(ratio)
+        #print(ratio)
         if ratio > 50:
             link = "https://www.neo24.pl" + name_tag[0].attrs['href']
             img = data.select('img[class*="slideCss-lazy"]')[0].attrs['src']
@@ -95,7 +100,7 @@ def neo24(page, product_code, return_dict):
     return_dict['neo24'] = None
 
 def morele(page, product_code, return_dict):
-    print("morele: " + str(len(page)))
+    #print("morele: " + str(len(page)))
     if page is None:
         return_dict['morele'] = None
         return
@@ -103,13 +108,13 @@ def morele(page, product_code, return_dict):
     product_list = soup.find_all("div", {'class': 'cat-product card'})
     for product in product_list:
         data = BeautifulSoup(str(product), 'lxml')
-        # print(data)
+        #print(data)
         product_data = data.find('div', {'class': 'cat-product card'})
-        # print(product_data)
+        #print(product_data)
         name = product_data.attrs['data-product-name']
-        # print(name)
+        #print(name)
         ratio = fuzz.ratio(product_code.lower(), name.lower())
-        print(ratio)
+        #print(ratio)
         if ratio > 50:
             tag_link = data.find('a', {'class': 'cat-product-image productLink'})
             # print(tag_link)
@@ -117,8 +122,8 @@ def morele(page, product_code, return_dict):
             # print(link)
             price = product_data['data-product-price']
             # print(price)
-            img = tag_link.img['src']
-            data_set = {'item': name, 'price': price, 'link': link, 'img': img}
+            #img = tag_link.img['src']
+            data_set = {'item': name, 'price': price, 'link': link}
             return_dict['morele'] = data_set
             return
         else:
@@ -165,7 +170,7 @@ def mediamarkt(page, product_code, return_dict):
         name = cleanText(product_data['title'])
         #print(name)
         ratio = fuzz.ratio(product_code.lower(), name.lower())
-        print(ratio)
+        #print(ratio)
         if ratio > 50:
             link = "https://mediamarkt.pl" + product_data['href']
             #print(link)
