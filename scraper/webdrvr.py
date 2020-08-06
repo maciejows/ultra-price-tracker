@@ -63,7 +63,7 @@ def search_mediamarkt(search_for, return_dict):
     except TimeoutException:
         #print("The parameter was not find! MM")
         # print(driver.current_url)
-        return_dict['mediamarkt'] = driver.current_url
+        return_dict['m ediamarkt'] = driver.current_url
         driver.close()
         return
     page = driver.page_source
@@ -129,21 +129,23 @@ def search_neo24(search_for, return_dict):
 
 
 def get_page_neo24(url):
-    driver = webdriver.Chrome(options=options)
-    driver.set_window_size(1920, 1080)
-    driver.get(url)
-    delay = 3  # seconds
     try:
-        WebDriverWait(driver, delay).until(EC.presence_of_all_elements_located((By.CLASS_NAME, 'productShopCss-neo24-product__price-12m')))
-        #print("Page is ready!")
-    except TimeoutException:
+        driver = webdriver.Chrome(options=options)
+        driver.set_window_size(1920, 1080)
+        driver.get(url)
+        delay = 3  # seconds
+        try:
+            WebDriverWait(driver, delay).until(EC.presence_of_all_elements_located((By.CLASS_NAME, 'productShopCss-neo24-product__price-12m')))
+            #print("Page is ready!")
+        except TimeoutException:
+            driver.close()
+            #print("The parameter was not find!")
+            return None
+        page = driver.page_source
         driver.close()
-        #print("The parameter was not find!")
+        return page
+    except:
         return None
-    page = driver.page_source
-    driver.close()
-    return page
-
 
 def search_morele(search_for, return_dict):
     driver = webdriver.Chrome(options=options)
@@ -156,13 +158,13 @@ def search_morele(search_for, return_dict):
     try:
         WebDriverWait(driver, delay).until(
             EC.presence_of_element_located((By.CLASS_NAME, 'cat-list-products')))
-        print("Page is ready! Morle")
+        # print("Page is ready! Morle")
     except TimeoutException:
-        print("The parameter was not find!")
+        # print("The parameter was not find!")
         driver.close()
         return_dict['morele'] = None
     page = driver.page_source
     driver.close()
-    print("morele - done")
+    # print("morele - done")
     return_dict['morele'] = page
 

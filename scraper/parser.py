@@ -100,7 +100,7 @@ def neo24(page, product_code, return_dict):
     return_dict['neo24'] = None
 
 def morele(page, product_code, return_dict):
-    #print("morele: " + str(len(page)))
+    print("morele: " + str(len(page)))
     if page is None:
         return_dict['morele'] = None
         return
@@ -112,9 +112,9 @@ def morele(page, product_code, return_dict):
         product_data = data.find('div', {'class': 'cat-product card'})
         #print(product_data)
         name = product_data.attrs['data-product-name']
-        #print(name)
+        print(name)
         ratio = fuzz.ratio(product_code.lower(), name.lower())
-        #print(ratio)
+        print(ratio)
         if ratio > 50:
             tag_link = data.find('a', {'class': 'cat-product-image productLink'})
             # print(tag_link)
@@ -145,7 +145,7 @@ def komputronik(page, product_code, return_dict):
         #print(name)
         ratio = fuzz.ratio(product_code.lower(), name.lower())
         if ratio > 60:
-            link = 'www.komputronik.pl' + tag_name['href'].strip()
+            link = tag_name['href'].strip()
             tag_price = data.find('span', {'class': 'proper at-gross-price-0'})
             price = tag_price.text.strip().replace("\xa0", "").replace("zł", "")
             data_set = {'item': name, 'price': price, 'link': link}

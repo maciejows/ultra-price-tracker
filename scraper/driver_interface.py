@@ -50,12 +50,12 @@ def get_pages(name):
 
 def scrap_all_url(url):
     data = get_data_from_url(url)
-    print(data['item'])
+    #print(data['item'])
     pages = get_pages(data['item'])
     manager = multiprocessing.Manager()
     data_dict = manager.dict()
-    print(str(pages['neo24']))
-    print("starting multithreaded parsing")
+    #print(str(pages['neo24']))
+    #print("starting multithreaded parsing")
     #print(pages)
     euro = multiprocessing.Process(target=sp.euro, args=(str(pages['euro']), data['item'], data_dict))
     euro.start()
