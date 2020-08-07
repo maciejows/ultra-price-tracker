@@ -78,6 +78,26 @@ def scrap_all_url(url):
     return data_dict
 
 
+def scrap_all_phrase(phrase):
+    collection = {}
+    return collection
+
+
+def get_product_data_from_phrase(phrase):
+    product = {}
+    return product
+
+
+def get_new_prices(url_array):
+    new_prices = {}
+    return new_prices
+
+
+def get_missing_data(product, store_array):
+    collection = {}
+    return collection
+
+
 if __name__ == "__main__":
     #scrap = UpcScrapper()
     #parser = UpcParser()
