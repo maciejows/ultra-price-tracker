@@ -1,20 +1,24 @@
 class Item:
+    id = 0
 
-    def __init__(self, name):
+    def __init__(self, name, shops):
         self.name = name
-        self.shops = []
+        self.shops = [shops]
 
     def setName(self, name):
         self.name = name
 
-    def setShop(self, shop, number):
-        self.shops[number] = shop
+    # def setShop(self, shop, number):
+    #     self.shops[number] = shop
 
-    def addShop(self, shop):
-        self.shops.append(shop)
+    # def addShop(self, shop):
+    #     self.shops.append(shop)
 
     def getName(self):
         return self.name
 
-    def getShop(self):
+    def getShops(self):
         return self.shops
+
+    def increaseId(self):
+        self.id += 1

@@ -1,9 +1,9 @@
 class Shop:
 
-    def __init__(self, name, url):
+    def __init__(self, name, url, data):
         self.name = name
         self.url = url
-        self.data = []
+        self.data = [data]
 
     def setName(self, name):
         self.name = name
@@ -11,8 +11,8 @@ class Shop:
     def setURL(self, url):
         self.url = url
 
-    def addData(self, data):
-        self.data.append(data)
+    # def addData(self, data):
+    #     self.data.append(data)
 
     def getName(self):
         return self.name
