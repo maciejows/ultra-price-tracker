@@ -20,5 +20,5 @@ class Item:
     def getShops(self):
         return self.shops
 
-    def increaseId(self):
-        self.id += 1
+    def getId(self):
+        return self.id
