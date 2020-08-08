@@ -2,7 +2,15 @@ import multiprocessing
 import scraper.parser as sp
 from scraper.scrpr import UpcScrapper
 import scraper.webdrvr as wd
-
+from fuzzywuzzy import fuzz
+def best_matching_result(phrase, data_dict):
+    shopdata = ['morele', 'mediaexpert', 'euro']
+    best_match = {'ratio': 0, 'data': {}}
+    for shop in shopdata:
+        if fuzz.ratio(phrase, data_dict[shop]['item']) > best_match['ratio']:
+            best_match['ratio'] = fuzz.ratio(phrase, data_dict[shop]['item'])
+            best_match['data'] = data_dict[shop]
+    return best_match['data']['item']
 
 def get_data_from_url(url):
     scrap = UpcScrapper()
@@ -48,26 +56,33 @@ def get_pages(name):
     return pages
 
 
-def scrap_all_url(url):
+def get_all_data_url(url):
     data = get_data_from_url(url)
-    #print(data['item'])
     pages = get_pages(data['item'])
+    return scrap_all_phrase(data['item'], pages)
+
+
+def get_all_data_phrase(phrase):
+    pages = get_pages(phrase)
+    return scrap_all_phrase(phrase, pages)
+
+
+def scrap_all_phrase(phrase, pages):
     manager = multiprocessing.Manager()
     data_dict = manager.dict()
-    #print(str(pages['neo24']))
-    #print("starting multithreaded parsing")
-    #print(pages)
-    euro = multiprocessing.Process(target=sp.euro, args=(str(pages['euro']), data['item'], data_dict))
+    euro = multiprocessing.Process(target=sp.euro, args=(str(pages['euro']), phrase, data_dict))
     euro.start()
-    mediaexpert = multiprocessing.Process(target=sp.mediaexpert, args=(str(pages['mediaexpert']), data['item'], data_dict))
+    mediaexpert = multiprocessing.Process(target=sp.mediaexpert,
+                                          args=(str(pages['mediaexpert']), phrase, data_dict))
     mediaexpert.start()
-    mediamarkt = multiprocessing.Process(target=sp.mediamarkt, args=(str(pages['mediamarkt']), data['item'], data_dict))
+    mediamarkt = multiprocessing.Process(target=sp.mediamarkt, args=(str(pages['mediamarkt']), phrase, data_dict))
     mediamarkt.start()
-    neo24 = multiprocessing.Process(target=sp.neo24, args=(str(pages['neo24']), data['item'], data_dict))
+    neo24 = multiprocessing.Process(target=sp.neo24, args=(str(pages['neo24']), phrase, data_dict))
     neo24.start()
-    morele = multiprocessing.Process(target=sp.morele, args=(str(pages['morele']), data['item'], data_dict))
+    morele = multiprocessing.Process(target=sp.morele, args=(str(pages['morele']), phrase, data_dict))
     morele.start()
-    komputronik = multiprocessing.Process(target=sp.komputronik, args=(str(pages['komputronik']), data['item'], data_dict))
+    komputronik = multiprocessing.Process(target=sp.komputronik,
+                                          args=(str(pages['komputronik']), phrase, data_dict))
     komputronik.start()
     euro.join()
     mediaexpert.join()
@@ -78,17 +93,37 @@ def scrap_all_url(url):
     return data_dict
 
 
-def scrap_all_phrase(phrase):
-    collection = {}
-    return collection
-
-
-def get_product_data_from_phrase(phrase):
-    product = {}
-    return product
+def get_product_data_phrase(phrase):
+    manager = multiprocessing.Manager()
+    data_dict = manager.dict()
+    euro = multiprocessing.Process(target=wd.search_euro, args=(phrase, data_dict))
+    euro.start()
+    mediaexpert = multiprocessing.Process(target=wd.search_mediaexpert, args=(phrase, data_dict))
+    mediaexpert.start()
+    morele = multiprocessing.Process(target=wd.search_morele(), args=(phrase, data_dict))
+    morele.start()
+    euro.join()
+    mediaexpert.join()
+    morele.join()
+    '''--------------------------------------------------------'''
+    pages = data_dict
+    data_dict.clear()
+    euro = multiprocessing.Process(target=sp.euro, args=(str(pages['euro']), phrase, data_dict))
+    euro.start()
+    mediaexpert = multiprocessing.Process(target=sp.mediaexpert, args=(str(pages['mediaexpert']), phrase, data_dict))
+    morele = multiprocessing.Process(target=sp.morele, args=(str(pages['morele']), phrase, data_dict))
+    morele.start()
+    euro.join()
+    mediaexpert.join()
+    morele.join()
+    '''--------------------------------------------------------'''
+    searching_phrase = best_matching_result(phrase, data_dict)
+    data_dict.clear()
+    return get_all_data_phrase(searching_phrase)
 
 
 def get_new_prices(url_array):
+    
     new_prices = {}
     return new_prices
 
@@ -101,7 +136,7 @@ def get_missing_data(product, store_array):
 if __name__ == "__main__":
     #scrap = UpcScrapper()
     #parser = UpcParser()
-    print(scrap_all_url("https://www.euro.com.pl/telefony-komorkowe/apple-iphone-pro-11-64gb-srebrny.bhtml"))
+    print(("https://www.euro.com.pl/telefony-komorkowe/apple-iphone-pro-11-64gb-srebrny.bhtml"))
     #print(search_mediamarkt("Smartfon APPLE iPhone 11 Pro Max 64GB Złoty"))
     #print(scrap.morele("https://www.morele.net/sluchawki-steelseries-arctis-1-61427-5938473/"))
     #print(scrap.komputronik("https://www.komputronik.pl/product/688817/huawei-matebook-x-pro-2020-green.html"))
