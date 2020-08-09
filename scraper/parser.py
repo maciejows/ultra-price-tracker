@@ -46,6 +46,27 @@ def euro(page, product_code, return_dict):
             continue
     return_dict['euro'] = None
 
+def euro_top(page, product_code, return_dict):
+    print("euro: " + str(len(page)))
+    if page is None:
+        return_dict['euro'] = None
+        return
+    soup = BeautifulSoup(page, 'html.parser')
+    product_list = soup.find_all("div", {'class': 'product-box js-UA-product'})
+    for product in product_list:
+        data = BeautifulSoup(str(product), 'lxml')
+        tag_name = data.find('h2', {'class': 'product-name'})
+        name = cleanText(tag_name.text)
+        # print(name)
+        link = 'www.euro.com.pl' + tag_name.a['href'].strip()
+        tag_price = data.find('div', {'class': 'price-normal selenium-price-normal'})
+        price = cleanPrice(tag_price.text)
+        img='null'
+        data_set = {'item': name, 'price': price, 'link': link, 'img': img}
+        return_dict['euro'] = data_set
+        return
+    return_dict['euro'] = None
+
 def mediaexpert(page, product_code, return_dict):
     if page is None or page.startswith("https://www.mediaexpert.pl"):
         scrap = UpcScrapper()
@@ -69,6 +90,28 @@ def mediaexpert(page, product_code, return_dict):
             return
         else:
             continue
+    return_dict['mediaexpert'] = None
+
+
+def mediaexpert_top(page, product_code, return_dict):
+    if page is None or page.startswith("https://www.mediaexpert.pl"):
+        scrap = UpcScrapper()
+        return_dict['mediaexpert'] = scrap.mediaexpert(page)
+        return
+    soup = BeautifulSoup(page, 'html.parser')
+    product_list = soup.find_all("div", {'class': 'c-grid_col is-grid-col-1'})
+    for product in product_list:
+        data = BeautifulSoup(str(product), 'lxml')
+        tag_name = data.find('a', {'class': 'a-typo is-secondary'})
+        # print(tag_name)
+        name = tag_name.text.replace("\xa0", "").replace("zł", "").replace('\n', '')
+        # print(name)
+        link = 'www.mediaexpert.pl' + tag_name['href']
+        tag_price = data.find('span', {'class': 'a-price_price'})
+        price = tag_price.text.strip().replace("\xa0", "").replace("zł", "")
+        return_dict['mediaexpert'] = {'item': name, 'price': price, 'link': link}
+        return
+
     return_dict['mediaexpert'] = None
 
 def neo24(page, product_code, return_dict):
@@ -129,6 +172,33 @@ def morele(page, product_code, return_dict):
         else:
             continue
     return_dict['morele'] = None
+
+
+def morele_top(page, product_code, return_dict):
+    print("morele: " + str(len(page)))
+    if page is None:
+        return_dict['morele'] = None
+        return
+    soup = BeautifulSoup(page, 'html.parser')
+    product_list = soup.find_all("div", {'class': 'cat-product card'})
+    for product in product_list:
+        data = BeautifulSoup(str(product), 'lxml')
+        #print(data)
+        product_data = data.find('div', {'class': 'cat-product card'})
+        #print(product_data)
+        name = product_data.attrs['data-product-name']
+        tag_link = data.find('a', {'class': 'cat-product-image productLink'})
+        # print(tag_link)
+        link = 'https://www.morele.net' + tag_link['href']
+        # print(link)
+        price = product_data['data-product-price']
+        # print(price)
+        #img = tag_link.img['src']
+        data_set = {'item': name, 'price': price, 'link': link}
+        return_dict['morele'] = data_set
+        return
+    return_dict['morele'] = None
+
 
 def komputronik(page, product_code, return_dict):
     #print("komp: " + str(len(page)))
