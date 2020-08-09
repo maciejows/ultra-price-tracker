@@ -1,5 +1,4 @@
 class Item:
-    id = 0
 
     def __init__(self, name, shops):
         self.name = name
@@ -19,6 +18,3 @@ class Item:
 
     def getShops(self):
         return self.shops
-
-    def getId(self):
-        return self.id
