@@ -61,8 +61,56 @@ def addShopToItem(item, shop):
     ogolna.update_one(find, newShop)
 
 
+def doesUrlExist(url):
+    x = ogolna.find_one({"shops.url": url})
+    if x is None:
+        print("doesn't exist")
+        return None
+    else:
+        print(x)
+        return x
+
+
+def doesNameExist(item_name):
+    x = ogolna.find_one({"item_name": item_name})
+    if x is None:
+        print("doesn't exist")
+        return None
+    else:
+        print(x)
+        return x
+
+
+def getShopUrl(item_name, shop_name):
+    x = ogolna.find_one({"item_name": item_name})
+    for i in x["shops"]:
+        y = list(i.values())
+        if y[0] == shop_name:
+            return y[1]
+        else:
+            continue
+
+
+def getShopData(item_name, shop_name):
+    x = ogolna.find_one({"item_name": item_name})
+    data = []
+    for i in x["shops"]:
+        y = list(i.values())
+        if y[0] == shop_name:
+            data.append(y[2])
+            break
+        else:
+            continue
+    return data
+
+
 if __name__ == "__main__":
-    addItemToDatabase(item1)
-    addItemToDatabase(item2)
-    setShopUrl(item1, shop2)
-    addDateToShop(item1, shop2, data3)
+    # addItemToDatabase(item1)
+    # addItemToDatabase(item2)
+    # setShopUrl(item1, shop2)
+    # addDateToShop(item1, shop2, data1)
+    # addDateToShop(item1, shop2, data2)
+    # doesUrlExist("www.morele.pl")
+    # doesNameExist("Apple iPhone 7")
+    print(getShopData("Apple iPhone 7", "morele"))
+    print(getShopUrl("Apple iPhone 7", "morele"))
