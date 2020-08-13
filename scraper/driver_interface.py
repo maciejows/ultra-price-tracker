@@ -33,7 +33,7 @@ def get_data_from_url(url):
     if 'neo24.pl' in url:
         return scrap.neo24(url)
 
-
+# gets name of the product as parameter
 def get_pages(name):
     manager = multiprocessing.Manager()
     data_dict = manager.dict()
@@ -64,18 +64,18 @@ def get_pages(name):
         return None
     return pages
 
-
+# gets url as parameter
 def get_all_data_url(url):
     data = get_data_from_url(url)
     pages = get_pages(data['item'])
     return scrap_all_phrase(data['item'], pages)
 
-
+# gets phrase that user entered as parameter
 def get_all_data_phrase(phrase):
     pages = get_pages(phrase)
     return scrap_all_phrase(phrase, pages)
 
-
+# gets searched phrase and pages source code
 def scrap_all_phrase(phrase, pages):
     manager = multiprocessing.Manager()
     data_dict = manager.dict()
@@ -135,7 +135,8 @@ def get_product_data_phrase(phrase):
     data_dict.clear()
     return get_all_data_phrase(searching_phrase)
 
-
+# gets URL of the stores as parameter with following pattern
+# {'store_name': 'product_url', 'store_name2': 'product_url2', etc.}
 def get_new_prices(url_array):
     manager = multiprocessing.Manager()
     new_data = manager.dict()
@@ -166,7 +167,9 @@ def get_new_prices(url_array):
     new_data['mediamarkt'] = scraper.mediamarkt(url_array['mediamarkt'])'''
     return new_data
 
-
+# gets data regarding stores as parameter with following pattern
+# {'store_name': None, 'store_name2': {product_data},'store_name3': {data},'store_name4': None, etc.}
+# if the value is None then it checks if the product is now available
 def get_missing_data(product, store_array):
     collection = {}
     return collection
