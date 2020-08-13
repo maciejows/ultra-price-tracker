@@ -35,7 +35,7 @@ def search_mediaexpert(search_for, return_dict):
    input_element.send_keys(Keys.ENTER)
    delay = 5 # seconds
    try:
-      WebDriverWait(driver, delay).until(EC.presence_of_all_elements_located((By.XPATH, '/html/body/div[1]/div[13]/div[2]/div[5]/div[1]')))
+      WebDriverWait(driver, delay).until(EC.presence_of_all_elements_located((By.CSS_SELECTOR, '.c-offerBox.is-wide.is-available')))
       #print("Page is ready! ME")
    except TimeoutException:
       #print("The parameter was not find! ME")
@@ -63,7 +63,7 @@ def search_mediamarkt(search_for, return_dict):
     except TimeoutException:
         #print("The parameter was not find! MM")
         # print(driver.current_url)
-        return_dict['m ediamarkt'] = driver.current_url
+        return_dict['mediamarkt'] = driver.current_url
         driver.close()
         return
     page = driver.page_source

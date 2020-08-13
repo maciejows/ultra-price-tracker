@@ -68,6 +68,7 @@ def euro_top(page, product_code, return_dict):
     return_dict['euro'] = None
 
 def mediaexpert(page, product_code, return_dict):
+    print("mediaexpert: " + str(len(page)))
     if page is None or page.startswith("https://www.mediaexpert.pl"):
         scrap = UpcScrapper()
         return_dict['mediaexpert'] = scrap.mediaexpert(page)
@@ -77,9 +78,9 @@ def mediaexpert(page, product_code, return_dict):
     for product in product_list:
         data = BeautifulSoup(str(product), 'lxml')
         tag_name = data.find('a', {'class': 'a-typo is-secondary'})
-        # print(tag_name)
+        #print(tag_name)
         name = tag_name.text.replace("\xa0", "").replace("zł", "").replace('\n', '')
-        # print(name)
+        #print(name)
         ratio = fuzz.ratio(product_code.lower(), name.lower())
         #print(ratio)
         if ratio > 50:
@@ -94,6 +95,7 @@ def mediaexpert(page, product_code, return_dict):
 
 
 def mediaexpert_top(page, product_code, return_dict):
+    print("mediaexpert: " + str(len(page)))
     if page is None or page.startswith("https://www.mediaexpert.pl"):
         scrap = UpcScrapper()
         return_dict['mediaexpert'] = scrap.mediaexpert(page)

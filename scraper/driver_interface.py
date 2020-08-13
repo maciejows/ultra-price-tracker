@@ -36,26 +36,31 @@ def get_data_from_url(url):
 def get_pages(name):
     manager = multiprocessing.Manager()
     data_dict = manager.dict()
-    euro = multiprocessing.Process(target=wd.search_euro, args=(name, data_dict))
-    euro.start()
-    mediaexpert = multiprocessing.Process(target=wd.search_mediaexpert, args=(name, data_dict))
-    mediaexpert.start()
-    mediamarkt = multiprocessing.Process(target=wd.search_mediamarkt, args=(name, data_dict))
-    mediamarkt.start()
-    neo24 = multiprocessing.Process(target=wd.search_neo24, args=(name, data_dict))
-    neo24.start()
-    morele = multiprocessing.Process(target=wd.search_morele, args=(name, data_dict))
-    morele.start()
-    komputronik = multiprocessing.Process(target=wd.search_komputronik, args=(name, data_dict))
-    komputronik.start()
-    euro.join()
-    mediaexpert.join()
-    mediamarkt.join()
-    neo24.join()
-    morele.join()
-    komputronik.join()
-    print("all data covered")
-    pages = data_dict
+    try:
+        euro = multiprocessing.Process(target=wd.search_euro, args=(name, data_dict))
+        euro.start()
+        mediaexpert = multiprocessing.Process(target=wd.search_mediaexpert, args=(name, data_dict))
+        mediaexpert.start()
+        mediamarkt = multiprocessing.Process(target=wd.search_mediamarkt, args=(name, data_dict))
+        mediamarkt.start()
+        neo24 = multiprocessing.Process(target=wd.search_neo24, args=(name, data_dict))
+        neo24.start()
+        morele = multiprocessing.Process(target=wd.search_morele, args=(name, data_dict))
+        morele.start()
+        komputronik = multiprocessing.Process(target=wd.search_komputronik, args=(name, data_dict))
+        komputronik.start()
+
+        euro.join()
+        mediaexpert.join()
+        mediamarkt.join()
+        neo24.join()
+        morele.join()
+        komputronik.join()
+        print("all data covered")
+        pages = data_dict
+    except:
+        print("Error getting pages. Please retry.")
+        return None
     return pages
 
 

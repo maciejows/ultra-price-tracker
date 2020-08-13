@@ -26,28 +26,34 @@ import threading
 import time
 
 options = Options()
-options.add_argument('--headless')
+#options.add_argument('--headless')
 
 
 def search_neo24(search_for):
    driver = webdriver.Chrome(options=options)
+   driver.get("https://www.mediaexpert.pl")
    driver.set_window_size(1920, 1080)
-   driver.get("https://morele.net")
-   input_element = driver.find_element_by_xpath('//input[@name="search"]')
+   input_element = driver.find_element_by_css_selector('div.c-search_input').find_element_by_tag_name('input')
    input_element.send_keys(search_for)
    input_element.send_keys(Keys.ENTER)
-   delay = 3  # seconds
+   delay = 2 # seconds
    try:
-      WebDriverWait(driver, delay).until(
-         EC.presence_of_element_located((By.CLASS_NAME, 'cat-list-products')))
-      print("Page is ready!")
+      WebDriverWait(driver, delay).until(EC.presence_of_all_elements_located((By.CSS_SELECTOR, '.c-offerBox.is-wide.is-available')))
+      print("Page is ready! ME")
    except TimeoutException:
-      print("The parameter was not find!")
-      return None
+      file = open('result.html', 'w')
+      file.write(driver.page_source)
+      file.close()
+      print("The parameter was not find! ME")
+      print(driver.current_url)
+      data = driver.current_url
+      driver.close()
+      return data
+
    page = driver.page_source
    driver.close()
-   print("morele - done")
    return page
+
 
 
 if __name__ == '__main__':
@@ -56,7 +62,7 @@ if __name__ == '__main__':
    #file = open("result.html", 'r')
    #data = file.read()
    #file.close()
-   parser.morele(search_neo24("Apple iPhone 11 Pro 64GB (srebrny)"), "Apple iPhone 11 Pro 64GB (srebrny)", data_dict)
+   parser.mediaexpert_top(search_neo24("Samsung Note 10"), "Samsung Note 10", data_dict)
    #scrap = UpcScrapper()
    #print(scrap.mediamarkt("https://mediamarkt.pl/telefony-i-smartfony/smartfon-apple-iphone-11-pro-max-64gb-zloty-mwhg2pm-a?querystring=Smartfon%20APPLE%20iPhone%2011%20Pro%20Max%2064GB%20Złoty"))
    print(data_dict)
