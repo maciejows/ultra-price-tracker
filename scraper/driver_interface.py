@@ -2,6 +2,7 @@ import multiprocessing
 import scraper.parser as sp
 from scraper.scrpr import UpcScrapper
 import scraper.webdrvr as wd
+import scraper.par_scraper as ps
 from fuzzywuzzy import fuzz
 
 
@@ -136,9 +137,34 @@ def get_product_data_phrase(phrase):
 
 
 def get_new_prices(url_array):
-    
-    new_prices = {}
-    return new_prices
+    manager = multiprocessing.Manager()
+    new_data = manager.dict()
+    euro = multiprocessing.Process(target=ps.euro, args=(url_array['euro'], new_data))
+    euro.start()
+    mediaexpert = multiprocessing.Process(target=ps.mediaexpert, args=(url_array['mediaexpert'], new_data))
+    mediaexpert.start()
+    mediamarkt = multiprocessing.Process(target=ps.mediamarkt, args=(url_array['mediamarkt'], new_data))
+    mediamarkt.start()
+    neo24 = multiprocessing.Process(target=ps.neo24, args=(url_array['neo24'], new_data))
+    neo24.start()
+    morele = multiprocessing.Process(target=ps.morele, args=(url_array['morele'], new_data))
+    morele.start()
+    komputronik = multiprocessing.Process(target=ps.komputronik, args=(url_array['komputronik'], new_data))
+    komputronik.start()
+    euro.join()
+    mediaexpert.join()
+    mediamarkt.join()
+    neo24.join()
+    morele.join()
+    komputronik.join()
+    '''new_data = {}
+    new_data['euro'] = scraper.euro(url_array['euro'])
+    new_data['mediaexpert'] = scraper.mediaexpert(url_array['mediaexpert'])
+    new_data['morele'] = scraper.morele(url_array['morele'])
+    new_data['neo24'] = scraper.neo24(url_array['neo24'])
+    new_data['komputronik'] = scraper.komputronik(url_array['komputronik'])
+    new_data['mediamarkt'] = scraper.mediamarkt(url_array['mediamarkt'])'''
+    return new_data
 
 
 def get_missing_data(product, store_array):
@@ -149,7 +175,8 @@ def get_missing_data(product, store_array):
 if __name__ == "__main__":
     #scrap = UpcScrapper()
     #parser = UpcParser()
-    print(get_product_data_phrase("Samsung Note 10"))
+    # print(get_product_data_phrase("Samsung Note 10"))
+    print(get_new_prices({'euro': None, 'neo24': 'https://www.neo24.pl/samsung-galaxy-note-10-srebrny.html', 'mediaexpert': 'www.mediaexpert.pl/komputery-i-tablety/tablety-i-e-booki/tablety/tablet-samsung-t875-galaxy-tab-s7-lte-sm-t875nzkaeue-czarny', 'mediamarkt': 404, 'morele': 'https://www.morele.net/smartfon-samsung-galaxy-note-10-256gb-dual-sim-aura-black-sm-n970fzk-6214787/', 'komputronik': 'https://www.komputronik.pl/product/651609/samsung-galaxy-note-10-256gb-dual-sim-aura-glow-n970-.html'}))
     #print(("https://www.euro.com.pl/telefony-komorkowe/apple-iphone-pro-11-64gb-srebrny.bhtml"))
     #print(search_mediamarkt("Smartfon APPLE iPhone 11 Pro Max 64GB Złoty"))
     #print(scrap.morele("https://www.morele.net/sluchawki-steelseries-arctis-1-61427-5938473/"))

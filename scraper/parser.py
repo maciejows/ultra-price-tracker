@@ -35,7 +35,7 @@ def euro(page, product_code, return_dict):
         ratio = fuzz.ratio(product_code.lower(), name.lower())
         #print(ratio)
         if ratio > 50:
-            link = 'www.euro.com.pl' + tag_name.a['href'].strip()
+            link = 'http://www.euro.com.pl' + tag_name.a['href'].strip()
             tag_price = data.find('div', {'class': 'price-normal selenium-price-normal'})
             price = cleanPrice(tag_price.text)
             img='null'
@@ -58,7 +58,7 @@ def euro_top(page, product_code, return_dict):
         tag_name = data.find('h2', {'class': 'product-name'})
         name = cleanText(tag_name.text)
         # print(name)
-        link = 'www.euro.com.pl' + tag_name.a['href'].strip()
+        link = 'http://www.euro.com.pl' + tag_name.a['href'].strip()
         tag_price = data.find('div', {'class': 'price-normal selenium-price-normal'})
         price = cleanPrice(tag_price.text)
         img='null'
@@ -84,7 +84,7 @@ def mediaexpert(page, product_code, return_dict):
         ratio = fuzz.ratio(product_code.lower(), name.lower())
         #print(ratio)
         if ratio > 50:
-            link = 'www.mediaexpert.pl' + tag_name['href']
+            link = 'http://www.mediaexpert.pl' + tag_name['href']
             tag_price = data.find('span', {'class': 'a-price_price'})
             price = tag_price.text.strip().replace("\xa0", "").replace("zł", "")
             return_dict['mediaexpert'] = {'item': name, 'price': price, 'link': link}
@@ -108,7 +108,7 @@ def mediaexpert_top(page, product_code, return_dict):
         # print(tag_name)
         name = tag_name.text.replace("\xa0", "").replace("zł", "").replace('\n', '')
         # print(name)
-        link = 'www.mediaexpert.pl' + tag_name['href']
+        link = 'http://www.mediaexpert.pl' + tag_name['href']
         tag_price = data.find('span', {'class': 'a-price_price'})
         price = tag_price.text.strip().replace("\xa0", "").replace("zł", "")
         return_dict['mediaexpert'] = {'item': name, 'price': price, 'link': link}
