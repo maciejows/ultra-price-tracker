@@ -49,7 +49,6 @@ def search_neo24(search_for):
       data = driver.current_url
       driver.close()
       return data
-
    page = driver.page_source
    driver.close()
    return page

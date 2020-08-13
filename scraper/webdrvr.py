@@ -135,11 +135,11 @@ def get_page_neo24(url):
         driver.get(url)
         delay = 3  # seconds
         try:
-            WebDriverWait(driver, delay).until(EC.presence_of_all_elements_located((By.CLASS_NAME, 'productShopCss-neo24-product__price-12m')))
-            #print("Page is ready!")
+            WebDriverWait(driver, delay).until(EC.presence_of_all_elements_located((By.XPATH, '//*[@id="productShop"]/div[2]/div')))
+            print("Page is ready!")
         except TimeoutException:
             driver.close()
-            #print("The parameter was not find!")
+            print("The parameter was not find!")
             return None
         page = driver.page_source
         driver.close()
