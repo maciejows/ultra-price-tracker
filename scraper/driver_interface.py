@@ -33,7 +33,7 @@ def get_data_from_url(url):
     if 'neo24.pl' in url:
         return scrap.neo24(url)
 
-
+# gets name of the product as parameter
 def get_pages(name):
     manager = multiprocessing.Manager()
     data_dict = manager.dict()
@@ -64,18 +64,18 @@ def get_pages(name):
         return None
     return pages
 
-
+# gets url as parameter
 def get_all_data_url(url):
     data = get_data_from_url(url)
     pages = get_pages(data['item'])
     return scrap_all_phrase(data['item'], pages)
 
-
+# gets phrase that user entered as parameter
 def get_all_data_phrase(phrase):
     pages = get_pages(phrase)
     return scrap_all_phrase(phrase, pages)
 
-
+# gets searched phrase and pages source code
 def scrap_all_phrase(phrase, pages):
     manager = multiprocessing.Manager()
     data_dict = manager.dict()
@@ -135,7 +135,8 @@ def get_product_data_phrase(phrase):
     data_dict.clear()
     return get_all_data_phrase(searching_phrase)
 
-
+# gets URL of the stores as parameter with following pattern
+# {'store_name': 'product_url', 'store_name2': 'product_url2', etc.}
 def get_new_prices(url_array):
     manager = multiprocessing.Manager()
     new_data = manager.dict()
@@ -166,9 +167,12 @@ def get_new_prices(url_array):
     new_data['mediamarkt'] = scraper.mediamarkt(url_array['mediamarkt'])'''
     return new_data
 
-
-def get_missing_data(product, store_array):
-    collection = {}
+# gets data regarding stores as parameter with following pattern
+# {'store_name': None, 'store_name2': {product_data},'store_name3': {data},'store_name4': None, etc.}
+# if the value is None then it checks if the product is now available
+def get_missing_data(product):
+    manager = multiprocessing.Manager()
+    collection = scrap_all_phrase(product, get_pages(product))
     return collection
 
 
@@ -176,7 +180,7 @@ if __name__ == "__main__":
     #scrap = UpcScrapper()
     #parser = UpcParser()
     # print(get_product_data_phrase("Samsung Note 10"))
-    print(get_new_prices({'euro': None, 'neo24': 'https://www.neo24.pl/samsung-galaxy-note-10-srebrny.html', 'mediaexpert': 'www.mediaexpert.pl/komputery-i-tablety/tablety-i-e-booki/tablety/tablet-samsung-t875-galaxy-tab-s7-lte-sm-t875nzkaeue-czarny', 'mediamarkt': 404, 'morele': 'https://www.morele.net/smartfon-samsung-galaxy-note-10-256gb-dual-sim-aura-black-sm-n970fzk-6214787/', 'komputronik': 'https://www.komputronik.pl/product/651609/samsung-galaxy-note-10-256gb-dual-sim-aura-glow-n970-.html'}))
+    #print(get_new_prices({'euro': None, 'neo24': 'https://www.neo24.pl/samsung-galaxy-note-10-srebrny.html', 'mediaexpert': 'www.mediaexpert.pl/komputery-i-tablety/tablety-i-e-booki/tablety/tablet-samsung-t875-galaxy-tab-s7-lte-sm-t875nzkaeue-czarny', 'mediamarkt': 404, 'morele': 'https://www.morele.net/smartfon-samsung-galaxy-note-10-256gb-dual-sim-aura-black-sm-n970fzk-6214787/', 'komputronik': 'https://www.komputronik.pl/product/651609/samsung-galaxy-note-10-256gb-dual-sim-aura-glow-n970-.html'}))
     #print(("https://www.euro.com.pl/telefony-komorkowe/apple-iphone-pro-11-64gb-srebrny.bhtml"))
     #print(search_mediamarkt("Smartfon APPLE iPhone 11 Pro Max 64GB Złoty"))
     #print(scrap.morele("https://www.morele.net/sluchawki-steelseries-arctis-1-61427-5938473/"))
@@ -187,3 +191,4 @@ if __name__ == "__main__":
     #print(scrap.xkom("https://www.x-kom.pl/p/423390-narzedzie-serwisowe-sieciowe-phanteks-toolkit-zestaw-narzedzi.html"))
     #print(scrap.neo24(get_page_neo24("https://www.neo24.pl/delonghi-odkamieniacz-ecodecalk-500ml.html"), "https://www.neo24.pl/delonghi-odkamieniacz-ecodecalk-500ml.html"))
     #print(search_mediamarkt("aoc"))
+    get_missing_data("Smartfon Apple iPhone 11 Pro 64 GB Dual SIM")
