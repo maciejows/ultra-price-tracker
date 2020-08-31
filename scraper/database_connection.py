@@ -11,13 +11,13 @@ db = cluster["scraper"]
 ogolna = db["Ogolna"]
 
 
-data1 = Data(7999, "01-01-2020")
+data1 = Data(1241324, "01-01-2020")
 data2 = Data(7899, "01-03-2020")
 data3 = Data(7500, "01-05-2020")
-shop1 = Shop("komputronik", "www.komputronik.pl", data1)
+shop1 = Shop("komputronik", "www.komputronik.pl/iphone-7-elo", data1)
 shop2 = Shop("morele", "www.morele.pl//apple-iPhone-X-Plus-64GB", data2)
 shop3 = Shop("x-kom", "www.x-kom.pl", data3)
-item1 = Item("Apple iPhone 7", shop2)
+item1 = Item("Apple iPhone 7 Plus", shop2)
 item2 = Item("Apple iPhone X Plus 64GB", shop3)
 
 
@@ -117,11 +117,11 @@ def getShopData(item_name, shop_name):
 if __name__ == "__main__":
     # addItemToDatabase(item1)
     # addItemToDatabase(item2)
-    # setShopUrl(item2, shop1)
+    # setShopUrl(item1, shop1)
     # setShopUrl(item2, shop2)
-    # addDateToShop(item2, shop2, data1)
+    addDateToShop(item1, shop2, data1)
     # addDateToShop(item2, shop2, data3)
     # doesUrlExist("www.x-kom.pl")
     # doesNameExist("Apple iPhone X Plus")
-    print(getShopData("Apple iPhone X Plus", "morele"))
+    # print(getShopData("Apple iPhone X Plus", "morele"))
     # print(getShopUrl("Apple iPhone X Plus", "morele"))
