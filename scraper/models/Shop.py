@@ -13,8 +13,8 @@ class Shop:
     def setURL(self, url):
         self.url = url
 
-    # def addData(self, data):
-    #     self.data.append(data)
+    def addData(self, data):
+        self.data.append(data)
 
     def getName(self):
         return self.name

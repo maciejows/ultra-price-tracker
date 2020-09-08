@@ -9,10 +9,6 @@ db = cluster["scraper"]
 ogolna = db["Ogolna"]
 
 item1 = Item("Maciej koks2")
-item2 = Item("Apple iPhone X Plus 64GB")
-
-item1.logItem()
-
 
 def doesUrlExist(url):
     x = ogolna.find_one({"shops.url": url})
@@ -61,12 +57,19 @@ def setShopUrl(item, shop):
     # find = {"shops.shop_name": shop[0].getName()}
 
 
+def addDateToShop(item_name, shop_name, data):
+    x = ogolna.find_one({"item_name": item_name})
+    find = ogolna.find_one({"item_name": item_name, "shops.shop_name": shop_name})
+    i = 0
+    for shop in find['shops']:
+        if shop['shop_name'] == shop_name:
+            break
+        i += 1
 
-def addDateToShop(item, shop, data):
-    ogolna.find = {"item_name": item.getName()}
-    find = {"shops.shop_name": shop.getName()}
-    newData = {"$addToSet": {"shops.$.data": Data()}}
-    ogolna.update_one(find, newData)
+    new_data = {"$push": {f"shops.{i}.data": data.serialize}}
+    #query = {"item_name": item_name}
+    #new = {"$set": {"item_name": "Maciej koks3"}}
+    ogolna.update_one(x, new_data)
 
 
 def getShopUrl(item_name, shop_name):
@@ -93,7 +96,9 @@ def getShopData(item_name, shop_name):
 
 
 if __name__ == "__main__":
-      addItemToDatabase(item1)
+    #  addItemToDatabase(item1)
+    # print(item1.serialize)
+     addDateToShop("Apple iPhone 7", "media-markt", Data(8))
     # addItemToDatabase(item2)
     # setShopUrl(item1, shop1)
     # setShopUrl(item2, shop2)

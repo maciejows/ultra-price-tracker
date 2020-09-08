@@ -22,11 +22,6 @@ class Item:
             shop_object.append(Shop(shop_name, None, []))
         return shop_object
 
-    def logItem(self):
-        print(self.name)
-        for shop in self.shops:
-            print(shop.__dict__)
-
     @property
     def serialize(self):
         shops_serialized = []
