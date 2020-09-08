@@ -8,7 +8,6 @@ import { FormsModule } from '@angular/forms';
 import { AppComponent } from './app.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { SearchBarComponent } from './components/search-bar/search-bar.component';
-import { ItemSelectComponent } from './components/item-select/item-select.component';
 import { StoreModule} from '@ngrx/store';
 import { reducer } from './store/procuct.reducers';
 import { EffectsModule } from '@ngrx/effects';
@@ -18,8 +17,7 @@ import { ProductEffects } from './store/product.effects';
   declarations: [
     AppComponent,
     NavbarComponent,
-    SearchBarComponent,
-    ItemSelectComponent
+    SearchBarComponent
   ],
   imports: [
     BrowserModule,

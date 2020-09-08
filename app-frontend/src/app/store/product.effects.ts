@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType} from '@ngrx/effects'
-import { map, mergeMap, exhaustMap } from 'rxjs/operators'
+import { map, mergeMap } from 'rxjs/operators'
 import { DataService } from '../services/data.service';
 import { searchProduct, getItem } from '../store/product.actions';
 
@@ -14,7 +14,7 @@ export class ProductEffects {
     getProposalItem$ = createEffect(() =>
         this.actions$.pipe(
             ofType(searchProduct),
-            exhaustMap( action =>
+            mergeMap( action =>
                 this.dataService.getProposalItems(action.searchingPhrase).pipe(
                 map(item => getItem({item}))
                 )       
