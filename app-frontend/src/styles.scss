@@ -1,23 +1,6 @@
 /* You can add global styles to this file, and also import other style files */
-$elegant-color: #2E2E2E;
 
-$elegant-color-semi-dark: #24292e;
-
-$elegant-color-dark: #212121;
-
-$stylish-color: #4B515D;
-
-$stylish-color-dark: #3E4551;
-
-$unique-color: #3F729B;
-
-$unique-color-dark: #1C2331;
-
-$special-color: #37474F;
-
-$deep-purple-lighten: #7e57c2 ;
-
-$special-color-dark: #263238;
+$accent: #f57f17;
 
 // Dark theme
 $dark-bg: #19191A;
@@ -59,25 +42,21 @@ body { background-color: $dark-bg; color: white; margin: 0; font-family: Roboto,
   color: #fff;
 }
 
-.elegant-bg {
-  background-color: $elegant-color;
+.color-accent {
+  color: $accent;
 }
 
-.elegant-dark-bg {
-  background-color: $elegant-color-dark;
-}
-
-.elegant-semi-dark-bg {
-  background-color: $elegant-color-semi-dark;
+.bg-accent {
+  background-color: $accent;
 }
 
 input:focus + label {
-  color: $deep-purple-lighten !important;
+  color: $accent !important;
 }
 
 input:focus {
-  border-bottom: 1px solid $deep-purple-lighten !important;
-  box-shadow: 0 1px 0 0 $deep-purple-lighten !important;
+  border-bottom: 1px solid $accent !important;
+  box-shadow: 0 1px 0 0 $accent !important;
 }
 
 input:focus + label.dark-bg-surface {

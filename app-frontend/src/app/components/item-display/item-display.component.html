@@ -1,1 +1,46 @@
-<div *ngIf="(item$ | async) as item"> {{item.item_name}} </div>
+<div class="container mt-5" *ngIf="(item$ | async) as item"> 
+   <div class="row justify-content-center">
+    <div class="col-11 text-center"><h3> {{item.item_name}} </h3></div>
+        <div *ngFor="let shop of item.shops" class="col-lg-8 col-11">
+            <div *ngIf="shop.url!=='Null'" class="z-depth-1 dark-bg-surface mb-2 px-4 pt-4 row">
+                <div class="col-12 col-md  my-auto ">
+                    <h3 class="rmpm"> {{shop.shop_name}}</h3>
+                </div>
+                <div class="col-7 col-md my-auto ">
+                    <span *ngIf="shop.data?.length">
+                        Current price: {{shop.data[shop.data.length-1].price}}
+                    </span>
+                </div>
+                <div class="col-5 col-md my-auto text-right">
+                    <a [href]="shop.url" target="_blank" class="shop-reference">
+                        Go to shop <mdb-icon fas class="color-accent" icon="angle-right"></mdb-icon>
+                    </a>
+                </div>
+                <div class="col-12 mt-2">
+                    <button mdbBtn size="sm" class="bg-accent" mdbWavesEffect (click)="chart.toggle();">
+                        chart
+                    </button>
+                    <div mdbCollapse #chart class="pb-1">
+                        <!-- Chart here -->
+                        <div *ngFor="let data of shop.data">
+                            {{data.price}} : {{data.date}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--
+<div style="display: block; width: 400px; height: 400px;" >
+    <canvas baseChart
+      [datasets]="lineChartData"
+      [labels]="lineChartLabels"
+      [options]="lineChartOptions"
+      [colors]="lineChartColors"
+      [chartType]="lineChartType"
+      [plugins]="lineChartPlugins">
+    </canvas>
+</div>
+-->
