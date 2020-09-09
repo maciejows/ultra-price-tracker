@@ -1,21 +1,22 @@
 import { createReducer, on } from '@ngrx/store';
-import { getItem } from './product.actions';
-import { SearchedItem } from '../models/SearchedItem';
+import { searchItem, searchItemError, searchItemSuccess } from './product.actions';
+import { ItemState } from '../models/ItemState';
 
-export interface State {
-    searchedItem: SearchedItem;
-    //TODO:
-    // Item list here
-}
 
-export const initialState: State = {
-    searchedItem: {name: "", imgUrl: "", price: 0}
+export const initialState: ItemState = {
+    item: {
+        _id: null,
+        item_name: '',
+        shops: []
+    },
+    error: ''
 }
 
 const _reducer = createReducer(initialState,
-    on(getItem, (state, {item}) => ({...state, searchedItem: item}))
+    on(searchItemSuccess, (state, {item}) => ({...state, item: item})),
+    on(searchItemError, (state, {error}) => ({...state, error: error}))
     )
 
-export function reducer(state, action){
+export function reducer(state: ItemState, action){
     return _reducer(state, action);
 }

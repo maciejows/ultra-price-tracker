@@ -1,6 +1,7 @@
 import { Shop } from './Shop';
 
 export class Item {
-  name: string;
+  _id: number;
+  item_name: string;
   shops: Shop[];
 }

@@ -23,6 +23,7 @@
     "@fortawesome/fontawesome-free": "^5.13.0",
     "@ngrx/effects": "^9.2.0",
     "@ngrx/store": "^9.2.0",
+    "@ngrx/store-devtools": "^10.0.0",
     "@types/chart.js": "^2.9.20",
     "angular-bootstrap-md": "^9.3.0",
     "animate.css": "^4.0.0",

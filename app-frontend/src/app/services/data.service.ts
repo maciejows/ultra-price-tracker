@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { SearchedItem } from '../models/SearchedItem';
+import { Item } from '../models/Item';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -12,12 +12,8 @@ export class DataService {
 
   constructor(private http: HttpClient) { }
 
-  getProposalItems(itemName: string): Observable<SearchedItem> {
-    return this.http.get<SearchedItem>(`${this.apiUrl}?name=${itemName}`);
-  }
-
-  getSingleItem(): Observable<SearchedItem> {
-    return this.http.get<SearchedItem>(`${this.apiUrl}/items/item`);
+  getItem(): Observable<Item> {
+    return this.http.get<Item>(`${this.apiUrl}`);
   }
 
   slugify(text: string): string {

@@ -1,34 +1,18 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, make_response
 from flask_cors import CORS
+import scraper.database_connection as db
 
 app = Flask(__name__)
 CORS(app)
 
 
-# TODO: remove later
-class Item:
-    def __init__(self, name="Not provided", price=0, thumbnail="Not provided"):
-        self.name = name
-        self.price = price
-        self.thumbnail = thumbnail
-
-    @property
-    def serialize(self):
-        return {
-            'name': self.name,
-            'price': self.price,
-            'url': self.thumbnail
-        }
-
-
-item = Item("Logitech g920", 1000)
-
-
 @app.route('/items', methods=["GET"])
 def output():
-    print("Got request")
-    print(request)
-    return jsonify(item.serialize)
+    item = db.getItem("Apple iPhone 7")
+    if item is not None:
+        return jsonify(item)
+    else:
+        return make_response("Record not found", 400)
 
 
 if __name__ == '__main__':

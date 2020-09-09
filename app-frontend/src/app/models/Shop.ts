@@ -1,7 +1,7 @@
 import { Data } from './Data';
 
 export class Shop {
-  name: string;
+  shop_name: string;
   url: string;
   data: Data[];
 }
