@@ -1,0 +1,17 @@
+<!--
+<div *ngFor="let element of data">
+    {{element.price}} : {{element.date}}
+</div>
+-->
+
+<div class="chart-wrapper" >
+    <canvas baseChart
+      [datasets]="lineChartData"
+      [labels]="lineChartLabels"
+      [options]="lineChartOptions"
+      [colors]="lineChartColors"
+      [chartType]="lineChartType"
+      [plugins]="lineChartPlugins"
+      [legend]="lineChartLegend">
+    </canvas>
+</div>
