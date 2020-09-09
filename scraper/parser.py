@@ -32,7 +32,7 @@ def euro(page, product_code, return_dict):
         tag_name = data.find('h2', {'class': 'product-name'})
         name = cleanText(tag_name.text)
         # print(name)
-        ratio = fuzz.ratio(product_code.lower(), name.lower())
+        ratio = fuzz.token_set_ratio(product_code.lower(), name.lower())
         #print(ratio)
         if ratio > 50:
             link = 'http://www.euro.com.pl' + tag_name.a['href'].strip()
@@ -81,7 +81,7 @@ def mediaexpert(page, product_code, return_dict):
         #print(tag_name)
         name = tag_name.text.replace("\xa0", "").replace("zł", "").replace('\n', '')
         #print(name)
-        ratio = fuzz.ratio(product_code.lower(), name.lower())
+        ratio = fuzz.token_set_ratio(product_code.lower(), name.lower())
         #print(ratio)
         if ratio > 50:
             link = 'http://www.mediaexpert.pl' + tag_name['href']
@@ -131,7 +131,7 @@ def neo24(page, product_code, return_dict):
         data = BeautifulSoup(str(product), 'lxml')
         name_tag = data.select('a[class*="listingItemCss-neo24-nameLink"]')
         name = name_tag[0].contents[0]
-        ratio = fuzz.ratio(product_code.lower(), name.lower())
+        ratio = fuzz.token_set_ratio(product_code.lower(), name.lower())
         #print(ratio)
         if ratio > 50:
             link = "https://www.neo24.pl" + name_tag[0].attrs['href']
@@ -158,7 +158,7 @@ def morele(page, product_code, return_dict):
         #print(product_data)
         name = product_data.attrs['data-product-name']
         print(name)
-        ratio = fuzz.ratio(product_code.lower(), name.lower())
+        ratio = fuzz.token_set_ratio(product_code.lower(), name.lower())
         print(ratio)
         if ratio > 50:
             tag_link = data.find('a', {'class': 'cat-product-image productLink'})
@@ -215,7 +215,7 @@ def komputronik(page, product_code, return_dict):
         tag_name = data.find('a', {'class': 'blank-link at-product-name-0'})
         name = tag_name.text.strip()
         #print(name)
-        ratio = fuzz.ratio(product_code.lower(), name.lower())
+        ratio = fuzz.token_set_ratio(product_code.lower(), name.lower())
         if ratio > 60:
             link = tag_name['href'].strip()
             tag_price = data.find('span', {'class': 'proper at-gross-price-0'})
@@ -241,7 +241,7 @@ def mediamarkt(page, product_code, return_dict):
         #print(product_data)
         name = cleanText(product_data['title'])
         #print(name)
-        ratio = fuzz.ratio(product_code.lower(), name.lower())
+        ratio = fuzz.token_set_ratio(product_code.lower(), name.lower())
         #print(ratio)
         if ratio > 50:
             link = "https://mediamarkt.pl" + product_data['href']
