@@ -1,5 +1,6 @@
 import { createAction, props } from '@ngrx/store';
-import { SearchedItem } from '../models/SearchedItem';
+import { Item } from '../models/Item';
 
-export const searchProduct = createAction('[Search Component] Search product', props<{searchingPhrase: string}>());
-export const getItem = createAction('[Search Component] Get Item', props<{item: SearchedItem}>())
+export const searchItem = createAction('[Search Component] Get Item', props<{searchingPhrase: string}>());
+export const searchItemSuccess = createAction('[Search Component] Get Item Success', props<{item: Item}>())
+export const searchItemError = createAction('[Search Component] Get Item Error', props<{error: string}>())

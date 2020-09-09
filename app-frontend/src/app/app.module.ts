@@ -3,7 +3,8 @@ import { NgModule } from '@angular/core';
 import { MDBBootstrapModule } from 'angular-bootstrap-md';
 import { HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
-
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { environment } from '../environments/environment';
 import { FormsModule } from '@angular/forms';
 import { AppComponent } from './app.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
@@ -12,12 +13,14 @@ import { StoreModule} from '@ngrx/store';
 import { reducer } from './store/procuct.reducers';
 import { EffectsModule } from '@ngrx/effects';
 import { ProductEffects } from './store/product.effects';
+import { ItemDisplayComponent } from './components/item-display/item-display.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     NavbarComponent,
-    SearchBarComponent
+    SearchBarComponent,
+    ItemDisplayComponent
   ],
   imports: [
     BrowserModule,
@@ -25,8 +28,12 @@ import { ProductEffects } from './store/product.effects';
     AppRoutingModule,
     FormsModule,
     HttpClientModule,
-    StoreModule.forRoot({product: reducer}),
-    EffectsModule.forRoot([ProductEffects])
+    StoreModule.forRoot({itemState: reducer}),
+    EffectsModule.forRoot([ProductEffects]),
+    StoreDevtoolsModule.instrument({
+      maxAge: 25, // Retains last 25 states
+      logOnly: environment.production, // Restrict extension to log-only mode
+    }),
   ],
   providers: [],
   bootstrap: [AppComponent]
