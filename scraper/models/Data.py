@@ -1,8 +1,9 @@
-class Data:
+import datetime
 
-    def __init__(self, price, date):
+class Data:
+    def __init__(self, price):
         self.price = price
-        self.date = date
+        self.date = datetime.datetime.now().strftime("%d-%m-%Y")
 
     def setPrice(self, price):
         self.price = price
@@ -15,3 +16,10 @@ class Data:
 
     def getDate(self):
         return self.date
+
+    @property
+    def serialize(self):
+        return {
+            "price": self.price,
+            "date": self.date
+        }
