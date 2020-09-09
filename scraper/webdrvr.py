@@ -9,9 +9,9 @@ from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 
-searchingPhrase = "50ep640"
+
 options = Options()
-#options.add_argument('--headless')
+options.add_argument('--headless')
 
 def search_euro(search_for, return_dict):
     driver = webdriver.Chrome(options=options)
