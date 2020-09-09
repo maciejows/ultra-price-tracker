@@ -1,6 +1,5 @@
 from pymongo import MongoClient
 from scraper.models.Item import Item
-from scraper.models.Shop import Shop
 from scraper.models.Data import Data
 
 
@@ -10,56 +9,42 @@ ogolna = db["Ogolna"]
 
 item1 = Item("Maciej koks2")
 
-def doesUrlExist(url):
-    x = ogolna.find_one({"shops.url": url})
-    if x is None:
-        print("doesn't exist")
-        return None
-    else:
-        print(x)
-        return x
-
 
 def doesNameExist(item_name):
     x = ogolna.find_one({"item_name": item_name})
     if x is None:
         print("doesn't exist")
-        return None
+        return False
     else:
-        print(x)
-        return x
+        return True
 
 
 def addItemToDatabase(item):
-    if doesNameExist(item.getName()) is None:
+    if doesNameExist(item.getName()) is False:
         x = ogolna.find_one(sort=[("_id", -1)])
         if x is None:
-            id_ = 0
+            _id = 0
         else:
-            id_ = x["_id"] + 1
-        item_frame = {"_id": id_, **item.serialize}
+            _id = x["_id"] + 1
+        item_frame = {"_id": _id, **item.serialize}
         ogolna.insert_one(item_frame)
     else:
-        return
-    # data = {"price": 1999, "date": "01-01-2020"}
-    # shop = {"shop_name": "komputronik", "url": "http://", "data": [data]}
-    # item = {"_id": ids, "item_name": item_name, "shops": [shop]}
+        print("Item exists")
+        return 0
 
 
-def setShopUrl(item, shop):
-    if doesUrlExist(shop.getURL()) is None:
-        ogolna.find({"item_name": item.getName()})
-        find = {"shops.shop_name": shop.getName()}
-        ogolna.update_one(find, {"$set": {"shops.$.url": shop.getURL()}})
-    else:
-        return
-    # ogolna.find({"item_name": item.getName()})
-    # find = {"shops.shop_name": shop[0].getName()}
+def getItem(item_name):
+    x = ogolna.find_one({"item_name": item_name})
+    if x is None:
+        return None
+    return x
 
 
 def addDateToShop(item_name, shop_name, data):
     x = ogolna.find_one({"item_name": item_name})
     find = ogolna.find_one({"item_name": item_name, "shops.shop_name": shop_name})
+    if x is None or find is None:
+        return None
     i = 0
     for shop in find['shops']:
         if shop['shop_name'] == shop_name:
@@ -67,19 +52,34 @@ def addDateToShop(item_name, shop_name, data):
         i += 1
 
     new_data = {"$push": {f"shops.{i}.data": data.serialize}}
-    #query = {"item_name": item_name}
-    #new = {"$set": {"item_name": "Maciej koks3"}}
     ogolna.update_one(x, new_data)
+    return 1
 
 
 def getShopUrl(item_name, shop_name):
     x = ogolna.find_one({"item_name": item_name})
+    if x is None:
+        return None
     for i in x["shops"]:
-        y = list(i.values())
-        if y[0] == shop_name:
-            return y[1]
-        else:
-            continue
+        if i['shop_name'] == shop_name:
+            return i['url']
+    return None
+
+
+def setShopUrl(item_name, shop_name, url):
+    x = ogolna.find_one({"item_name": item_name})
+    find = ogolna.find_one({"item_name": item_name, "shops.shop_name": shop_name})
+    if x is None:
+        return None
+    i = 0
+    for shop in find['shops']:
+        if shop['shop_name'] == shop_name:
+            break
+        i += 1
+
+    new_data = {"$set": {f"shops.{i}.url": url}}
+    ogolna.update_one(x, new_data)
+    return 1
 
 
 def getShopData(item_name, shop_name):
@@ -95,16 +95,20 @@ def getShopData(item_name, shop_name):
     return data
 
 
+def doesUrlExist(url):
+    x = ogolna.find_one({"shops.url": url})
+    if x is None:
+        print("doesn't exist")
+        return None
+    else:
+        print(x)
+        return x
+
+
 if __name__ == "__main__":
-    #  addItemToDatabase(item1)
-    # print(item1.serialize)
-     addDateToShop("Apple iPhone 7", "media-markt", Data(8))
-    # addItemToDatabase(item2)
-    # setShopUrl(item1, shop1)
-    # setShopUrl(item2, shop2)
-    # addDateToShop(item1, shop2, data1)
-    # addDateToShop(item2, shop2, data3)
-    # doesUrlExist("www.x-kom.pl")
-    # doesNameExist("Apple iPhone X Plus")
-    # print(getShopData("Apple iPhone X Plus", "morele"))
-    # print(getShopUrl("Apple iPhone X Plus", "morele"))
+    addItemToDatabase(Item("Maciek 12"))
+    print(getItem("Maciek 123"))
+    # print(doesNameExist("Maciek 123"))
+    # print(addDateToShop("Apple iPhone 7", "media-markt", Data(15)))
+    # print(setShopUrl("Apple iPhone 7", "media-markt", "media-markt.xD2"))
+    print(getShopUrl("Apple iPhone 7", "media-markt"))
