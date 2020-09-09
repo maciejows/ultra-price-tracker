@@ -22,25 +22,10 @@
                     </button>
                     <div mdbCollapse #chart class="pb-1">
                         <!-- Chart here -->
-                        <div *ngFor="let data of shop.data">
-                            {{data.price}} : {{data.date}}
-                        </div>
+                        <app-chart [data]="shop.data"></app-chart>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
-<!--
-<div style="display: block; width: 400px; height: 400px;" >
-    <canvas baseChart
-      [datasets]="lineChartData"
-      [labels]="lineChartLabels"
-      [options]="lineChartOptions"
-      [colors]="lineChartColors"
-      [chartType]="lineChartType"
-      [plugins]="lineChartPlugins">
-    </canvas>
-</div>
--->

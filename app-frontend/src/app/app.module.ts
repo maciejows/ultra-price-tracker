@@ -16,13 +16,15 @@ import { EffectsModule } from '@ngrx/effects';
 import { ProductEffects } from './store/product.effects';
 import { ItemDisplayComponent } from './components/item-display/item-display.component';
 import { ChartsModule } from 'ng2-charts';
+import { ChartComponent } from './components/chart/chart.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     NavbarComponent,
     SearchBarComponent,
-    ItemDisplayComponent
+    ItemDisplayComponent,
+    ChartComponent
   ],
   imports: [
     BrowserModule,
