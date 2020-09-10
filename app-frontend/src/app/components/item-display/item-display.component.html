@@ -1,10 +1,10 @@
-<div class="container mt-5" *ngIf="(item$ | async) as item"> 
-   <div class="row justify-content-center">
+<div class="container mt-5" > 
+   <div *ngIf="(item$ | async) as item; else elseBlock" class="row justify-content-center">
     <div class="col-11 text-center"><h3> {{item.item_name}} </h3></div>
         <div *ngFor="let shop of item.shops" class="col-lg-8 col-11">
             <div *ngIf="shop.url!=='Null'" class="z-depth-1 dark-bg-surface mb-2 px-4 pt-4 row">
                 <div class="col-12 col-md  my-auto ">
-                    <h3 class="rmpm"> {{shop.shop_name}}</h3>
+                    <h3 class="rmpm"> {{shop.shop_name | titlecase}}</h3>
                 </div>
                 <div class="col-7 col-md my-auto ">
                     <span *ngIf="shop.data?.length">
@@ -28,4 +28,11 @@
             </div>
         </div>
     </div>
+    <ng-template #elseBlock>
+        <div class="row justify-content-center">
+            <div class="spinner-border text-center color-accent" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
+        </div>
+    </ng-template>
 </div>

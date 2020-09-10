@@ -31,7 +31,7 @@ export class ChartComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
-    let prices = this.data.map(el => el.price);
+    let prices = this.data.map(el => +el.price.toString().replace(" ", ''));
     let dates = this.data.map(el => el.date);
     this.lineChartData = [{data: prices, label: 'Price'}];
     this.lineChartLabels = dates;

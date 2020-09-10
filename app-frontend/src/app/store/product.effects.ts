@@ -16,7 +16,7 @@ export class ProductEffects {
         this.actions$.pipe(
             ofType(searchItem),
             mergeMap( action =>
-                this.dataService.getItem().pipe(
+                this.dataService.getItem(action.searchingPhrase).pipe(
                     map(item => searchItemSuccess({item})),
                     catchError(error => of(searchItemError({error: error})))
                 )       

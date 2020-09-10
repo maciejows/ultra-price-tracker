@@ -8,12 +8,12 @@ import { Observable } from 'rxjs';
 })
 export class DataService {
 
-  apiUrl: string = `http://${window.location.hostname}:5034/items`
+  apiUrl: string = `http://${window.location.hostname}:4100/items`
 
   constructor(private http: HttpClient) { }
 
-  getItem(): Observable<Item> {
-    return this.http.get<Item>(`${this.apiUrl}`);
+  getItem(phrase: string): Observable<Item> {
+    return this.http.get<Item>(`${this.apiUrl}?name=${phrase.toLowerCase()}`);
   }
 
   slugify(text: string): string {

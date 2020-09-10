@@ -24,7 +24,7 @@ import { ChartComponent } from './components/chart/chart.component';
     NavbarComponent,
     SearchBarComponent,
     ItemDisplayComponent,
-    ChartComponent
+    ChartComponent,
   ],
   imports: [
     BrowserModule,

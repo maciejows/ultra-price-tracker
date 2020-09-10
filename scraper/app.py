@@ -58,13 +58,4 @@ def fillData(item, data):
 
 
 if __name__ == '__main__':
-    print("Przed")
-    #print(wdi.get_all_data_phrase("apple iphone 7"))
-    #print(wdi.get_all_data_url("https://www.morele.net/smartfon-apple-iphone-7-32-gb-czarny-mn8x2pm-a-1021730/"))
-    #print(wdi.get_missing_data("Apple iPhone 7")) #wywala session-id
-    #print(wdi.get_data_from_url("https://www.morele.net/smartfon-apple-iphone-7-32-gb-czarny-mn8x2pm-a-1021730/"))
-    print("Po")
     app.run("127.0.0.1", "4100")
-
-    #print(wdi.get_new_prices())
-    #wdi.get_data_from_url()

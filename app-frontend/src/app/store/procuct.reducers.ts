@@ -1,5 +1,5 @@
 import { createReducer, on } from '@ngrx/store';
-import { searchItem, searchItemError, searchItemSuccess } from './product.actions';
+import { searchItem, searchItemError, searchItemSuccess, clear } from './product.actions';
 import { ItemState } from '../models/ItemState';
 
 
@@ -14,7 +14,8 @@ export const initialState: ItemState = {
 
 const _reducer = createReducer(initialState,
     on(searchItemSuccess, (state, {item}) => ({...state, item: item})),
-    on(searchItemError, (state, {error}) => ({...state, error: error}))
+    on(searchItemError, (state, {error}) => ({...state, error: error})),
+    on(clear, (state) => ({...state, item: undefined}))
     )
 
 export function reducer(state: ItemState, action){
