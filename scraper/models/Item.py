@@ -16,7 +16,7 @@ class Item:
         return self.shops
 
     def createEmptyShopArray(self):
-        shop_names = ["komputronik", "morele", "media-markt", "media-expert", "euro", "x-kom", "neo24"]
+        shop_names = ["morele", "komputronik", "mediaexpert", "euro"]
         shop_object = []
         for shop_name in shop_names:
             shop_object.append(Shop(shop_name, None, []))

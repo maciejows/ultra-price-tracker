@@ -20,17 +20,23 @@ def doesNameExist(item_name):
 
 
 def addItemToDatabase(item):
-    if doesNameExist(item.getName()) is False:
+    if doesNameExist(item['item_name']) is False:
         x = ogolna.find_one(sort=[("_id", -1)])
         if x is None:
             _id = 0
         else:
             _id = x["_id"] + 1
-        item_frame = {"_id": _id, **item.serialize}
+        item_frame = {"_id": _id, **item}
         ogolna.insert_one(item_frame)
     else:
         print("Item exists")
         return 0
+
+
+def updateItemInDatabase(item):
+    x = ogolna.find_one({"item_name": item['item_name']})
+    new_data = {"$set": {"shops": item['shops']}}
+    ogolna.update_one(x, new_data)
 
 
 def getItem(item_name):
@@ -103,12 +109,3 @@ def doesUrlExist(url):
     else:
         print(x)
         return x
-
-
-if __name__ == "__main__":
-    addItemToDatabase(Item("Maciek 12"))
-    print(getItem("Maciek 123"))
-    # print(doesNameExist("Maciek 123"))
-    # print(addDateToShop("Apple iPhone 7", "media-markt", Data(15)))
-    # print(setShopUrl("Apple iPhone 7", "media-markt", "media-markt.xD2"))
-    print(getShopUrl("Apple iPhone 7", "media-markt"))
