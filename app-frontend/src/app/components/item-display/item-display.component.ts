@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Subscription, Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { ItemState } from 'src/app/models/ItemState';
-import { searchItem } from '../../store/product.actions';
+import { searchItem, clear } from '../../store/product.actions';
 import { Item } from 'src/app/models/Item';
 
 @Component({
@@ -21,13 +21,12 @@ export class ItemDisplayComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private store: Store<{itemState: ItemState}>
-    ) { 
-     
-    }
+    ) {}
 
   ngOnInit(): void {
     this.routeSub = this.route.queryParams.subscribe(
       params => {
+        this.store.dispatch(clear());
         this.store.dispatch(searchItem({searchingPhrase: params['name']}))
       }
     )
