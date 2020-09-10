@@ -51,8 +51,9 @@ def fillData(item, data):
     i = 0
     values = list(data.values())
     for shop in item['shops']:
-        shop['url'] = values[i]['link']
-        shop['data'].append(Data(values[i]['price']).serialize)
+        if values[i] is not None:
+            shop['url'] = values[i]['link']
+            shop['data'].append(Data(values[i]['price']).serialize)
         i += 1
     return item
 
