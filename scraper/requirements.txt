@@ -5,5 +5,5 @@ requests==2.23.0
 scraper==0.1.0
 selenium==3.141.0
 Flask==1.1.2
-Flask-Cors==3.0.8
+Flask-Cors==3.0.9
 fuzzywuzzy==0.18.0
